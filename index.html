@@ -4,11 +4,16 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="style.css" />
 		<title>Weather App</title>
 	</head>
 	<body>
-		<button data-button>Get Weather</button>
+		<form class="form">
+			<input type="text" class="form__input" placeholder="City" data-input />
+			<button class="form__submit" data-button>Check the weather</button>
+		</form>
+		<h1 class="weather__city">City</h1>
+		<img src="" alt="Weather icon" data-icon>
 		<script src="script.js" type="module"></script>
 	</body>
 </html>
