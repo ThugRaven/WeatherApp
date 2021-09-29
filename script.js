@@ -9,6 +9,14 @@ const weatherButton = document.querySelector("[data-button]");
 const weatherCity = document.querySelector(".weather__city");
 const weatherIcon = document.querySelector("[data-icon]");
 
+history.replaceState("", null, "");
+
+window.addEventListener("popstate", (event) => {
+	console.log(
+		"location: " + document.location + ", state: " + JSON.stringify(event.state)
+	);
+});
+
 weatherButton.addEventListener("click", (event) => {
 	event.preventDefault();
 	const location = locationInput.value.trim();
@@ -18,6 +26,8 @@ weatherButton.addEventListener("click", (event) => {
 		.getCurrentByCityName(location)
 		.then((current) => {
 			console.log(current);
+
+			history.pushState({ city: location }, "city", `?city=${location}`);
 
 			weatherCity.innerHTML = `${current.sys.country}, ${current.name}<br />${
 				current.main.temp
