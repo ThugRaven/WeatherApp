@@ -6,8 +6,18 @@ const weather = new Weather(API_KEY);
 
 const locationInput = document.querySelector("[data-input]");
 const weatherButton = document.querySelector("[data-button]");
-const weatherCity = document.querySelector(".weather__city");
+const weatherTemp = document.querySelector(".temp__value");
+const weatherFeelsTemp = document.querySelector(".temp__feels-value");
+const weatherCity = document.querySelector(".current__location-name");
 const weatherIcon = document.querySelector("[data-icon]");
+const weatherMainDesc = document.querySelector(".current__main-desc");
+const weatherSecondDesc = document.querySelector(".current__second-desc");
+const weatherPressure = document.querySelector("[data-pressure]");
+const weatherVisibility = document.querySelector("[data-visibility]");
+const weatherHumidity = document.querySelector("[data-humidity]");
+const weatherSunrise = document.querySelector("[data-sunrise]");
+const weatherWind = document.querySelector("[data-wind]");
+const weatherSunset = document.querySelector("[data-sunset]");
 
 history.replaceState("", null, "");
 
@@ -29,10 +39,18 @@ weatherButton.addEventListener("click", (event) => {
 
 			history.pushState({ city: location }, "city", `?city=${location}`);
 
-			weatherCity.innerHTML = `${current.sys.country}, ${current.name}<br />${
-				current.main.temp
-			} &deg;C | ${weather.celsiusToFahrenheit(current.main.temp)} &deg;F`;
+			weatherTemp.innerHTML = displayTemp(current.main.temp);
+			weatherFeelsTemp.innerHTML = displayTemp(current.main.feels_like);
+			weatherCity.innerHTML = `${current.name}, ${current.sys.country}`;
 			weatherIcon.src = weather.getWeatherIcon(current.weather[0].icon);
+			weatherMainDesc.innerHTML = current.weather[0].main;
+			weatherSecondDesc.innerHTML = current.weather[0].description;
+			weatherPressure.innerHTML = current.main.pressure;
+			weatherVisibility.innerHTML = current.visibility / 1000;
+			weatherHumidity.innerHTML = current.main.humidity;
+			// weatherSunrise.innerHTML = displayTime(new Date(current.sys.sunrise));
+			weatherWind.innerHTML = current.wind.speed;
+			// weatherSunset.innerHTML = displayTime(new Date(current.sys.sunset));
 		})
 		.catch((err) => {
 			console.error(err);
@@ -40,3 +58,22 @@ weatherButton.addEventListener("click", (event) => {
 			weatherCity.innerHTML = "City not found";
 		});
 });
+
+function displayTemp(temp) {
+	return Math.round(temp);
+}
+
+function displayDate(date) {
+	return date.toLocaleDateString(undefined, {
+		weekday: "long",
+		day: "numeric",
+		month: "short",
+	});
+}
+
+function displayTime(time) {
+	return time.toLocaleDateString(undefined, {
+		hour: "numeric",
+		minute: "numeric",
+	});
+}
