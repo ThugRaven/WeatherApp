@@ -29,6 +29,7 @@ body {
 	color: var(--clr-light);
 	display: grid;
 	place-items: center;
+	gap: 1em;
 	min-height: 100vh;
 }
 
@@ -255,7 +256,6 @@ body {
 
 .current__date {
 	color: var(--clr-primary-light-100);
-	font-size: 0.9em;
 }
 
 .current__second-desc {
@@ -284,15 +284,25 @@ body {
 }
 
 .row__title {
-	font-size: 0.8em;
 	color: var(--clr-primary-light-100);
 }
 
 .row__value {
 	font-weight: 500;
+	font-size: 1.2em;
 }
 
 .row__unit {
-	font-size: 0.8em;
 	color: var(--clr-primary-light-100);
+}
+
+.current__wind-direction {
+	position: relative;
+}
+
+.wind-pointer {
+	fill: var(--clr-accent);
+	width: 2em;
+	height: 2em;
+	transition: transform 250ms ease-in-out;
 }
