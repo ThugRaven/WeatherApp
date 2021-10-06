@@ -4,25 +4,16 @@ import Weather from "./weather.js";
 const weather = new Weather(API_KEY);
 // weather.setUnits("standard");
 
+const currentWeatherTemplate = document.getElementById(
+	"current-weather__template"
+);
 const locationInput = document.querySelector("[data-input]");
 const weatherButton = document.querySelector("[data-button]");
-const weatherCity = document.querySelector(".current__location-name");
-const weatherDate = document.querySelector(".current__date");
-const weatherTemp = document.querySelector(".temp__value");
-const weatherFeelsTemp = document.querySelector(".temp__feels-value");
-const weatherIcon = document.querySelector("[data-icon]");
-const weatherMainDesc = document.querySelector(".current__main-desc");
-const weatherSecondDesc = document.querySelector(".current__second-desc");
-const weatherPressure = document.querySelector("[data-pressure]");
-const weatherVisibility = document.querySelector("[data-visibility]");
-const weatherHumidity = document.querySelector("[data-humidity]");
-const weatherSunrise = document.querySelector("[data-sunrise]");
-const weatherWind = document.querySelector("[data-wind]");
-const weatherSunset = document.querySelector("[data-sunset]");
-const weatherCloudiness = document.querySelector("[data-cloudiness]");
-const weatherWindDirection = document.querySelector("[data-wind-deg]");
-const weatherWindPointer = document.querySelector(".wind-pointer");
-const weatherPrecipitation = document.querySelector("[data-precipitation]");
+const searchError = document.querySelector(".search-error");
+
+const LOCAL_STORAGE_CITIES_WEATHER_DATA_KEY = "weather.app.cities.weather.data";
+let citiesWeatherData =
+	JSON.parse(localStorage.getItem(LOCAL_STORAGE_CITIES_WEATHER_DATA_KEY)) || [];
 
 history.replaceState("", null, "");
 
@@ -37,42 +28,122 @@ weatherButton.addEventListener("click", (event) => {
 	const location = locationInput.value.trim();
 	if (location == null || location === "") return;
 
+	let currentSection;
+	let isAdded = false;
+	if (document.body.querySelector(".section--current") == null) {
+		currentSection = document.importNode(currentWeatherTemplate.content, true);
+		isAdded = true;
+	} else {
+		currentSection = document.querySelector(".section--current");
+	}
+
+	let cityData = checkCitiesWeatherData(location);
+	let updateDate = new Date().setMinutes(new Date().getMinutes() - 10);
+	let updateWeather = false;
+	// console.log(new Date(cityData.weatherData.dt * 1000));
+	// console.log(new Date(updateDate));
+	// console.log(cityData.weatherData.dt * 1000 < updateDate);
+	if (cityData && cityData.weatherData.dt * 1000 <= updateDate) {
+		updateWeather = true;
+	} else if (cityData) {
+		searchError.innerHTML = "";
+		searchError.dataset.hidden = true;
+		displayData(currentSection, cityData.weatherData);
+
+		console.log("Display Last");
+		console.log(cityData);
+
+		if (isAdded) {
+			document.body.appendChild(currentSection);
+		}
+		return;
+	}
+
 	weather
 		.getCurrentByCityName(location)
-		.then((current) => {
-			console.log(current);
+		.then((weatherData) => {
+			console.log("Call API");
+			searchError.innerHTML = "";
+			searchError.dataset.hidden = true;
 
 			history.pushState({ city: location }, "city", `?city=${location}`);
 
-			weatherCity.innerHTML = `${current.name}, ${current.sys.country}`;
-			weatherDate.innerHTML = displayUNIXDate(current.dt);
-			weatherTemp.innerHTML = displayTemp(current.main.temp);
-			weatherFeelsTemp.innerHTML = displayTemp(current.main.feels_like);
-			weatherIcon.src = weather.getWeatherIcon(current.weather[0].icon);
-			weatherMainDesc.innerHTML = current.weather[0].main;
-			weatherSecondDesc.innerHTML = current.weather[0].description;
-			weatherPressure.innerHTML = current.main.pressure;
-			weatherVisibility.innerHTML = Math.round(current.visibility / 100) / 10;
-			weatherHumidity.innerHTML = current.main.humidity;
-			weatherSunrise.innerHTML = displayUNIXTime(current.sys.sunrise);
-			weatherWind.innerHTML = current.wind.speed;
-			weatherSunset.innerHTML = displayUNIXTime(current.sys.sunset);
-			weatherCloudiness.innerHTML = current.clouds.all;
-			weatherWindDirection.innerHTML = `${current.wind.deg}&deg;`;
-			weatherWindPointer.style.setProperty(
-				"transform",
-				`rotate(${current.wind.deg}deg)`
-			);
-			if (current.rain != null && current.rain["1h"] != null) {
-				weatherPrecipitation.innerHTML = current.rain["1h"];
-			} else weatherPrecipitation.innerHTML = "0";
+			if (updateWeather) {
+				let index = citiesWeatherData.findIndex((el) => el.city == location);
+				citiesWeatherData[index] = { city: location, weatherData };
+				console.log("Update Location");
+			} else {
+				citiesWeatherData.push({ city: location, weatherData });
+				console.log("Add First Time");
+			}
+
+			saveCitiesWeatherData();
+			displayData(currentSection, weatherData);
+
+			console.log(weatherData);
+
+			if (isAdded) {
+				document.body.appendChild(currentSection);
+			}
 		})
 		.catch((err) => {
 			console.error(err);
 
-			weatherCity.innerHTML = "City not found";
+			if (!isAdded) {
+				document.body.removeChild(currentSection);
+			}
+
+			searchError.dataset.hidden = false;
+			if (err.message == 404) {
+				searchError.innerHTML = "City not found!";
+			} else {
+				searchError.innerHTML = "Error occured!";
+			}
 		});
 });
+
+function displayData(container, weatherData) {
+	const weatherCity = container.querySelector(".current__location-name");
+	const weatherDate = container.querySelector(".current__date");
+	const weatherTemp = container.querySelector(".temp__value");
+	const weatherFeelsTemp = container.querySelector(".temp__feels-value");
+	const weatherIcon = container.querySelector("[data-icon]");
+	const weatherMainDesc = container.querySelector(".current__main-desc");
+	const weatherSecondDesc = container.querySelector(".current__second-desc");
+	const weatherPressure = container.querySelector("[data-pressure]");
+	const weatherVisibility = container.querySelector("[data-visibility]");
+	const weatherHumidity = container.querySelector("[data-humidity]");
+	const weatherSunrise = container.querySelector("[data-sunrise]");
+	const weatherWind = container.querySelector("[data-wind]");
+	const weatherSunset = container.querySelector("[data-sunset]");
+	const weatherCloudiness = container.querySelector("[data-cloudiness]");
+	const weatherWindDirection = container.querySelector("[data-wind-deg]");
+	const weatherWindPointer = container.querySelector(".wind-pointer");
+	const weatherPrecipitation = container.querySelector("[data-precipitation]");
+
+	weatherCity.innerHTML = `${weatherData.name}, ${weatherData.sys.country}`;
+	weatherDate.innerHTML = displayUNIXDate(weatherData.dt);
+	weatherTemp.innerHTML = displayTemp(weatherData.main.temp);
+	weatherFeelsTemp.innerHTML = displayTemp(weatherData.main.feels_like);
+	weatherIcon.src = weather.getWeatherIcon(weatherData.weather[0].icon);
+	weatherMainDesc.innerHTML = weatherData.weather[0].main;
+	weatherSecondDesc.innerHTML = weatherData.weather[0].description;
+	weatherPressure.innerHTML = weatherData.main.pressure;
+	weatherVisibility.innerHTML = Math.round(weatherData.visibility / 100) / 10;
+	weatherHumidity.innerHTML = weatherData.main.humidity;
+	weatherSunrise.innerHTML = displayUNIXTime(weatherData.sys.sunrise);
+	weatherWind.innerHTML = weatherData.wind.speed;
+	weatherSunset.innerHTML = displayUNIXTime(weatherData.sys.sunset);
+	weatherCloudiness.innerHTML = weatherData.clouds.all;
+	weatherWindDirection.innerHTML = `${weatherData.wind.deg}&deg;`;
+	weatherWindPointer.style.setProperty(
+		"transform",
+		`rotate(${weatherData.wind.deg}deg)`
+	);
+	if (weatherData.rain != null && weatherData.rain["1h"] != null) {
+		weatherPrecipitation.innerHTML = weatherData.rain["1h"];
+	} else weatherPrecipitation.innerHTML = "0";
+}
 
 function displayTemp(temp) {
 	return Math.round(temp);
@@ -95,4 +166,28 @@ function displayUNIXTime(unix) {
 		hour: "numeric",
 		minute: "numeric",
 	}).format(time);
+}
+
+function saveCitiesWeatherData() {
+	localStorage.setItem(
+		LOCAL_STORAGE_CITIES_WEATHER_DATA_KEY,
+		JSON.stringify(citiesWeatherData)
+	);
+}
+
+function checkCitiesWeatherData(city) {
+	let hasCityInput = citiesWeatherData.find((el) => el.city == city);
+	let hasCityQuery = citiesWeatherData.find(
+		(el) => el.weatherData.name == city
+	);
+
+	if (hasCityInput) {
+		console.log("hasInput");
+		return hasCityInput;
+	}
+	if (hasCityQuery) {
+		console.log("hasQuery");
+		return hasCityQuery;
+	}
+	return false;
 }

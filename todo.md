@@ -11,7 +11,6 @@
 - [ ] Add animations to section-main
   - [ ] On logo click change to light/dark mode with rotation and change the icon to sun/moon
   - [ ] On search move logo to the left and show "Weather App" title
-  - [ ] On search display new section with weather data underneath the input section
   - [ ] Skeleton animation after search
 - [ ] Display data after search
   - [ ] Last updated at (might use localStorage)
@@ -20,3 +19,4 @@
   - [ ] Use history API to render data according to history state (back button, etc.)
   - [ ] Search by coordinates
   - [ ] Change temperature unit on click from Celsius to Fahrenheit and back
+  - [ ] Add refresh button 10 minutes after searching
