@@ -24,6 +24,9 @@ window.addEventListener("popstate", (event) => {
 	);
 });
 
+let currentSection;
+let isFirstTime = false;
+
 let refreshTimeout;
 
 weatherButton.addEventListener("click", (event) => {
@@ -31,66 +34,64 @@ weatherButton.addEventListener("click", (event) => {
 	const location = locationInput.value.trim();
 	if (location == null || location === "") return;
 
-	let currentSection;
-	let isAdded = false;
-
 	let cityData = checkCitiesWeatherData(location);
-	let updateDate = new Date().setMinutes(new Date().getMinutes() - 10);
-	let updateWeather = false;
 
 	if (document.body.querySelector(".section--current") == null) {
 		currentSection = document.importNode(currentWeatherTemplate.content, true);
-		isAdded = true;
+		isFirstTime = true;
 
-		const refreshData = currentSection.querySelector(".refresh-icon");
-		refreshData.addEventListener("click", () => {
-			// Check if data is ready to be refreshed/updated and then call the api
-			console.log("Refresh Data");
-		});
+		// const refreshData = currentSection.querySelector(".refresh-icon");
+		// refreshData.addEventListener("click", () => {
+		// 	// Check if data is ready to be refreshed/updated and then call the api
+		// 	if (cityData && cityData.weatherData.dt * 1000 <= updateDate) {
+		// 		currentSection = document.querySelector(".section--current");
+		// 		isFirstTime = false;
+		// 		callCurrentWeather(location);
+		// 		console.log("Refresh Data");
+		// 	}
+		// });
 
-		if (refreshTimeout) clearTimeout(refreshTimeout);
-		let timeout = constants.REFRESH_TIMEOUT;
+		// if (refreshTimeout) clearTimeout(refreshTimeout);
+		// let timeout = constants.REFRESH_TIMEOUT;
 
-		if (cityData) {
-			let timeDifference = Math.round(
-				new Date() - cityData.weatherData.dt * 1000
-			);
-			if (constants.REFRESH_TIMEOUT - timeDifference > 0) {
-				timeout = constants.REFRESH_TIMEOUT - timeDifference;
-			}
-			console.log(
-				`Timeout: ${
-					Math.round((Math.round(timeout / 1000) / 60) * 100) / 100
-				} min, ${timeout / 1000}s, ${timeout}ms`
-			);
-		}
+		// if (cityData) {
+		// 	let timeDifference = Math.round(
+		// 		new Date() - cityData.weatherData.dt * 1000
+		// 	);
+		// 	if (constants.REFRESH_TIMEOUT - timeDifference > 0) {
+		// 		timeout = constants.REFRESH_TIMEOUT - timeDifference;
+		// 	}
+		// 	console.log(
+		// 		`Timeout: ${
+		// 			Math.round((Math.round(timeout / 1000) / 60) * 100) / 100
+		// 		} min, ${timeout / 1000}s, ${timeout}ms`
+		// 	);
+		// }
 
-		refreshTimeout = setTimeout(() => {
-			console.log("Ready to refresh!");
-		}, timeout);
+		// refreshTimeout = setTimeout(() => {
+		// 	console.log("Ready to refresh!");
+		// }, timeout);
 	} else {
 		currentSection = document.querySelector(".section--current");
+		isFirstTime = false;
 	}
 
-	// console.log(new Date(cityData.weatherData.dt * 1000));
-	// console.log(new Date(updateDate));
-	// console.log(cityData.weatherData.dt * 1000 < updateDate);
-	if (cityData && cityData.weatherData.dt * 1000 <= updateDate) {
-		updateWeather = true;
-	} else if (cityData) {
-		searchError.innerHTML = "";
-		searchError.dataset.hidden = true;
-		displayData(currentSection, cityData.weatherData);
+	if (cityData) {
+		if (isUpdateAvailable(location)) {
+			callCurrentWeather(location);
+		} else {
+			searchError.innerHTML = "";
+			searchError.dataset.hidden = true;
+			displayData(currentSection, cityData.weatherData);
 
-		console.log("Display Last");
-		console.log(cityData);
-
-		if (isAdded) {
-			document.body.appendChild(currentSection);
+			console.log("No Update");
 		}
-		return;
+	} else {
+		callCurrentWeather(location);
 	}
+});
 
+function callCurrentWeather(location) {
 	weather
 		.getCurrentByCityName(location)
 		.then((weatherData) => {
@@ -100,7 +101,7 @@ weatherButton.addEventListener("click", (event) => {
 
 			history.pushState({ city: location }, "city", `?city=${location}`);
 
-			if (updateWeather) {
+			if (isUpdateAvailable(location)) {
 				let index = citiesWeatherData.findIndex((el) => el.city == location);
 				citiesWeatherData[index] = { city: location, weatherData };
 				console.log("Update Location");
@@ -113,15 +114,11 @@ weatherButton.addEventListener("click", (event) => {
 			displayData(currentSection, weatherData);
 
 			console.log(weatherData);
-
-			if (isAdded) {
-				document.body.appendChild(currentSection);
-			}
 		})
 		.catch((err) => {
 			console.error(err);
 
-			if (!isAdded) {
+			if (!isFirstTime) {
 				document.body.removeChild(currentSection);
 			}
 
@@ -132,7 +129,7 @@ weatherButton.addEventListener("click", (event) => {
 				searchError.innerHTML = "Error occured!";
 			}
 		});
-});
+}
 
 function displayData(container, weatherData) {
 	const weatherCity = container.querySelector(".current__location-name");
@@ -175,6 +172,10 @@ function displayData(container, weatherData) {
 	if (weatherData.rain != null && weatherData.rain["1h"] != null) {
 		weatherPrecipitation.innerHTML = weatherData.rain["1h"];
 	} else weatherPrecipitation.innerHTML = "0";
+
+	if (isFirstTime) {
+		document.body.appendChild(currentSection);
+	}
 }
 
 function displayTemp(temp) {
@@ -222,4 +223,19 @@ function checkCitiesWeatherData(city) {
 		return hasCityQuery;
 	}
 	return false;
+}
+
+function isUpdateAvailable(location) {
+	let cityData = checkCitiesWeatherData(location);
+	let updateDate = new Date().setMinutes(
+		new Date().getMinutes() - constants.UPDATE_TIME
+	);
+
+	if (cityData && cityData.weatherData.dt * 1000 <= updateDate) {
+		console.log("Update Available");
+		return true;
+	} else if (cityData) {
+		console.log("Update Not Available");
+		return false;
+	}
 }
