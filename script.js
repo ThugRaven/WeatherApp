@@ -1,5 +1,6 @@
 import { API_KEY } from "./settings.js";
 import Weather from "./weather.js";
+import * as constants from "./constants.js";
 
 const weather = new Weather(API_KEY);
 // weather.setUnits("standard");
@@ -23,6 +24,8 @@ window.addEventListener("popstate", (event) => {
 	);
 });
 
+let refreshTimeout;
+
 weatherButton.addEventListener("click", (event) => {
 	event.preventDefault();
 	const location = locationInput.value.trim();
@@ -30,16 +33,45 @@ weatherButton.addEventListener("click", (event) => {
 
 	let currentSection;
 	let isAdded = false;
-	if (document.body.querySelector(".section--current") == null) {
-		currentSection = document.importNode(currentWeatherTemplate.content, true);
-		isAdded = true;
-	} else {
-		currentSection = document.querySelector(".section--current");
-	}
 
 	let cityData = checkCitiesWeatherData(location);
 	let updateDate = new Date().setMinutes(new Date().getMinutes() - 10);
 	let updateWeather = false;
+
+	if (document.body.querySelector(".section--current") == null) {
+		currentSection = document.importNode(currentWeatherTemplate.content, true);
+		isAdded = true;
+
+		const refreshData = currentSection.querySelector(".refresh-icon");
+		refreshData.addEventListener("click", () => {
+			// Check if data is ready to be refreshed/updated and then call the api
+			console.log("Refresh Data");
+		});
+
+		if (refreshTimeout) clearTimeout(refreshTimeout);
+		let timeout = constants.REFRESH_TIMEOUT;
+
+		if (cityData) {
+			let timeDifference = Math.round(
+				new Date() - cityData.weatherData.dt * 1000
+			);
+			if (constants.REFRESH_TIMEOUT - timeDifference > 0) {
+				timeout = constants.REFRESH_TIMEOUT - timeDifference;
+			}
+			console.log(
+				`Timeout: ${
+					Math.round((Math.round(timeout / 1000) / 60) * 100) / 100
+				} min, ${timeout / 1000}s, ${timeout}ms`
+			);
+		}
+
+		refreshTimeout = setTimeout(() => {
+			console.log("Ready to refresh!");
+		}, timeout);
+	} else {
+		currentSection = document.querySelector(".section--current");
+	}
+
 	// console.log(new Date(cityData.weatherData.dt * 1000));
 	// console.log(new Date(updateDate));
 	// console.log(cityData.weatherData.dt * 1000 < updateDate);
