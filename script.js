@@ -31,7 +31,7 @@ let refreshTimeout;
 
 weatherButton.addEventListener("click", (event) => {
 	event.preventDefault();
-	const location = locationInput.value.trim();
+	const location = locationInput.value.trim().toLowerCase();
 	if (location == null || location === "") return;
 
 	let cityData = checkCitiesWeatherData(location);
@@ -40,37 +40,18 @@ weatherButton.addEventListener("click", (event) => {
 		currentSection = document.importNode(currentWeatherTemplate.content, true);
 		isFirstTime = true;
 
-		// const refreshData = currentSection.querySelector(".refresh-icon");
-		// refreshData.addEventListener("click", () => {
-		// 	// Check if data is ready to be refreshed/updated and then call the api
-		// 	if (cityData && cityData.weatherData.dt * 1000 <= updateDate) {
-		// 		currentSection = document.querySelector(".section--current");
-		// 		isFirstTime = false;
-		// 		callCurrentWeather(location);
-		// 		console.log("Refresh Data");
-		// 	}
-		// });
+		const refreshIcon = currentSection.querySelector(".refresh-icon");
+		refreshIcon.addEventListener("click", () => {
+			if (isUpdateAvailable(location)) {
+				currentSection = document.querySelector(".section--current");
+				isFirstTime = false;
+				callCurrentWeather(location);
+				console.log("Refresh Data");
+			}
+			setRefreshTimeout(location, refreshIcon);
+		});
 
-		// if (refreshTimeout) clearTimeout(refreshTimeout);
-		// let timeout = constants.REFRESH_TIMEOUT;
-
-		// if (cityData) {
-		// 	let timeDifference = Math.round(
-		// 		new Date() - cityData.weatherData.dt * 1000
-		// 	);
-		// 	if (constants.REFRESH_TIMEOUT - timeDifference > 0) {
-		// 		timeout = constants.REFRESH_TIMEOUT - timeDifference;
-		// 	}
-		// 	console.log(
-		// 		`Timeout: ${
-		// 			Math.round((Math.round(timeout / 1000) / 60) * 100) / 100
-		// 		} min, ${timeout / 1000}s, ${timeout}ms`
-		// 	);
-		// }
-
-		// refreshTimeout = setTimeout(() => {
-		// 	console.log("Ready to refresh!");
-		// }, timeout);
+		setRefreshTimeout(location, refreshIcon);
 	} else {
 		currentSection = document.querySelector(".section--current");
 		isFirstTime = false;
@@ -82,7 +63,7 @@ weatherButton.addEventListener("click", (event) => {
 		} else {
 			searchError.innerHTML = "";
 			searchError.dataset.hidden = true;
-			displayData(currentSection, cityData.weatherData);
+			displayData(currentSection, cityData.weatherData, location);
 
 			console.log("No Update");
 		}
@@ -103,6 +84,11 @@ function callCurrentWeather(location) {
 
 			if (isUpdateAvailable(location)) {
 				let index = citiesWeatherData.findIndex((el) => el.city == location);
+				if (index < 0) {
+					index = citiesWeatherData.findIndex(
+						(el) => el.weatherData.name == location
+					);
+				}
 				citiesWeatherData[index] = { city: location, weatherData };
 				console.log("Update Location");
 			} else {
@@ -111,13 +97,14 @@ function callCurrentWeather(location) {
 			}
 
 			saveCitiesWeatherData();
-			displayData(currentSection, weatherData);
+			displayData(currentSection, weatherData, location);
 
 			console.log(weatherData);
 		})
 		.catch((err) => {
 			console.error(err);
 
+			if (refreshTimeout) clearTimeout(refreshTimeout);
 			if (!isFirstTime) {
 				document.body.removeChild(currentSection);
 			}
@@ -131,7 +118,9 @@ function callCurrentWeather(location) {
 		});
 }
 
-function displayData(container, weatherData) {
+function displayData(container, weatherData, location) {
+	document.title = `Weather App | ${location}`;
+
 	const weatherCity = container.querySelector(".current__location-name");
 	const weatherDate = container.querySelector(".current__date");
 	const weatherTemp = container.querySelector(".temp__value");
@@ -238,4 +227,32 @@ function isUpdateAvailable(location) {
 		console.log("Update Not Available");
 		return false;
 	}
+}
+
+function setRefreshTimeout(location, refreshIcon) {
+	refreshIcon.dataset.hidden = true;
+	let cityData = checkCitiesWeatherData(location);
+	if (refreshTimeout) clearTimeout(refreshTimeout);
+	let timeout = constants.REFRESH_TIMEOUT;
+
+	if (cityData) {
+		let timeDifference = Math.round(
+			new Date() - cityData.weatherData.dt * 1000
+		);
+		if (constants.REFRESH_TIMEOUT - timeDifference > 0) {
+			timeout = constants.REFRESH_TIMEOUT - timeDifference;
+		}
+		console.log(
+			`Timeout: ${
+				Math.round((Math.round(timeout / 1000) / 60) * 100) / 100
+			} min, ${timeout / 1000}s, ${timeout}ms`
+		);
+	}
+
+	refreshTimeout = setTimeout(() => {
+		if (isUpdateAvailable(location)) {
+			refreshIcon.dataset.hidden = false;
+		}
+		console.log("Ready to refresh!");
+	}, timeout);
 }
