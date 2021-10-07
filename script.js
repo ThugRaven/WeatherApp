@@ -50,12 +50,13 @@ weatherButton.addEventListener("click", (event) => {
 			}
 			setRefreshTimeout(location, refreshIcon);
 		});
-
-		setRefreshTimeout(location, refreshIcon);
 	} else {
 		currentSection = document.querySelector(".section--current");
 		isFirstTime = false;
 	}
+
+	const refreshIcon = currentSection.querySelector(".refresh-icon");
+	setRefreshTimeout(location, refreshIcon);
 
 	if (cityData) {
 		if (isUpdateAvailable(location)) {
