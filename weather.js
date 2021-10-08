@@ -65,6 +65,14 @@ export default class Weather {
 		return this.prepareURLFetch(url);
 	}
 
+	getOneCallByLatLong(lat, long) {
+		let url = `${this.URL_BASE}/onecall?lat=${encodeURI(lat)}&lon=${encodeURI(
+			long
+		)}&appid=${this.API_KEY}`;
+
+		return this.prepareURLFetch(url);
+	}
+
 	celsiusToFahrenheit(temp) {
 		return temp * (9 / 5) + 32;
 	}

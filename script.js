@@ -28,6 +28,7 @@ let currentSection;
 let isFirstTime = false;
 
 let refreshTimeout;
+let globalWeatherData;
 
 weatherButton.addEventListener("click", (event) => {
 	event.preventDefault();
@@ -40,6 +41,9 @@ weatherButton.addEventListener("click", (event) => {
 		currentSection = document.importNode(currentWeatherTemplate.content, true);
 		isFirstTime = true;
 
+		const moreInfoButton = currentSection.querySelector(".more-info");
+		moreInfoButton.addEventListener("click", callOneCall);
+
 		const refreshIcon = currentSection.querySelector(".refresh-icon");
 		refreshIcon.addEventListener("click", () => {
 			if (isUpdateAvailable(location)) {
@@ -49,11 +53,6 @@ weatherButton.addEventListener("click", (event) => {
 				console.log("Refresh Data");
 			}
 			setRefreshTimeout(location, refreshIcon);
-		});
-
-		const moreInfoButton = currentSection.querySelector(".more-info");
-		moreInfoButton.addEventListener("click", () => {
-			console.log("More Info");
 		});
 	} else {
 		currentSection = document.querySelector(".section--current");
@@ -70,6 +69,7 @@ weatherButton.addEventListener("click", (event) => {
 			searchError.innerHTML = "";
 			searchError.dataset.hidden = true;
 			displayData(currentSection, cityData.weatherData);
+			globalWeatherData = cityData.weatherData;
 
 			console.log("No Update");
 		}
@@ -114,6 +114,7 @@ function callCurrentWeather(location) {
 			displayData(currentSection, weatherData);
 
 			console.log(weatherData);
+			globalWeatherData = weatherData;
 		})
 		.catch((err) => {
 			console.error(err);
@@ -269,4 +270,31 @@ function setRefreshTimeout(location, refreshIcon) {
 		}
 		console.log("Ready to refresh!");
 	}, timeout);
+}
+
+function callOneCall() {
+	console.log("More Info");
+	console.log(globalWeatherData);
+	if (globalWeatherData) {
+		console.log(
+			`Lat: ${globalWeatherData.coord.lat}, Lon: ${globalWeatherData.coord.lon}`
+		);
+
+		weather
+			.getOneCallByLatLong(
+				globalWeatherData.coord.lat,
+				globalWeatherData.coord.lon
+			)
+			.then((weatherData) => {
+				console.log("Call One Call API");
+				console.log(weatherData);
+			})
+			.catch((err) => {
+				console.error(err);
+
+				if (err.message == 404) {
+				} else {
+				}
+			});
+	}
 }
