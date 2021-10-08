@@ -45,7 +45,7 @@ body {
 	justify-content: center;
 	align-items: center;
 	margin: 0;
-	padding: 2em;
+	padding: 1em 2em;
 	background-color: var(--clr-primary-dark);
 	border-radius: 1em;
 }
@@ -308,7 +308,7 @@ body {
 	grid-template-columns: 1fr 1fr 1fr;
 	grid-template-rows: 1fr 1fr;
 	list-style-type: none;
-	margin: 1.5em 0.5em 0em 0.5em;
+	margin: 1em 0;
 	padding: 0em;
 	gap: 0.5em;
 }
@@ -345,4 +345,22 @@ body {
 	width: 2em;
 	height: 2em;
 	transition: transform 250ms ease-in-out;
+}
+
+.more-info {
+	padding: 0.75em 2em;
+	width: 100%;
+	background-color: var(--clr-primary);
+	border: 0;
+	border-radius: 0.5em;
+	color: white;
+	font-family: var(--ff-primary);
+	font-size: 1em;
+	font-weight: 500;
+	cursor: pointer;
+	transition: background-color 150ms ease-in-out;
+}
+
+.more-info:hover {
+	background-color: var(--clr-primary-light-400);
 }

@@ -50,6 +50,11 @@ weatherButton.addEventListener("click", (event) => {
 			}
 			setRefreshTimeout(location, refreshIcon);
 		});
+
+		const moreInfoButton = currentSection.querySelector(".more-info");
+		moreInfoButton.addEventListener("click", () => {
+			console.log("More Info");
+		});
 	} else {
 		currentSection = document.querySelector(".section--current");
 		isFirstTime = false;
@@ -64,7 +69,7 @@ weatherButton.addEventListener("click", (event) => {
 		} else {
 			searchError.innerHTML = "";
 			searchError.dataset.hidden = true;
-			displayData(currentSection, cityData.weatherData, location);
+			displayData(currentSection, cityData.weatherData);
 
 			console.log("No Update");
 		}
@@ -90,15 +95,23 @@ function callCurrentWeather(location) {
 						(el) => el.weatherData.name == location
 					);
 				}
-				citiesWeatherData[index] = { city: location, weatherData };
+				citiesWeatherData[index] = {
+					city: location,
+					weatherData,
+					lastUpdated: new Date(),
+				};
 				console.log("Update Location");
 			} else {
-				citiesWeatherData.push({ city: location, weatherData });
+				citiesWeatherData.push({
+					city: location,
+					weatherData,
+					lastUpdated: new Date(),
+				});
 				console.log("Add First Time");
 			}
 
 			saveCitiesWeatherData();
-			displayData(currentSection, weatherData, location);
+			displayData(currentSection, weatherData);
 
 			console.log(weatherData);
 		})
@@ -119,8 +132,8 @@ function callCurrentWeather(location) {
 		});
 }
 
-function displayData(container, weatherData, location) {
-	document.title = `Weather App | ${location}`;
+function displayData(container, weatherData) {
+	document.title = `Weather App | ${weatherData.name}`;
 
 	const weatherCity = container.querySelector(".current__location-name");
 	const weatherDate = container.querySelector(".current__date");

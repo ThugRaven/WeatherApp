@@ -1,6 +1,7 @@
 export default class Weather {
 	UNITS = "metric";
 	LANGUAGE = "en";
+	URL_BASE = "https://api.openweathermap.org/data/2.5";
 
 	constructor(apiKey) {
 		this.API_KEY = apiKey;
@@ -41,25 +42,25 @@ export default class Weather {
 	}
 
 	getCurrentByCityName(cityName) {
-		let url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURI(
-			cityName
-		)}&appid=${this.API_KEY}`;
+		let url = `${this.URL_BASE}/weather?q=${encodeURI(cityName)}&appid=${
+			this.API_KEY
+		}`;
 
 		return this.prepareURLFetch(url);
 	}
 
 	getCurrentByCityID(cityID) {
-		let url = `https://api.openweathermap.org/data/2.5/weather?id=${encodeURI(
-			cityID
-		)}&appid=${this.API_KEY}`;
+		let url = `${this.URL_BASE}/weather?id=${encodeURI(cityID)}&appid=${
+			this.API_KEY
+		}`;
 
 		return this.prepareURLFetch(url);
 	}
 
 	getCurrentByLatLong(lat, long) {
-		let url = `https://api.openweathermap.org/data/2.5/weather?lat=${encodeURI(
-			lat
-		)}&lon=${encodeURI(long)}&appid=${this.API_KEY}`;
+		let url = `${this.URL_BASE}/weather?lat=${encodeURI(lat)}&lon=${encodeURI(
+			long
+		)}&appid=${this.API_KEY}`;
 
 		return this.prepareURLFetch(url);
 	}
