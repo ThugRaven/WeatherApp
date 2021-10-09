@@ -88,6 +88,10 @@
 			</form>
 			<p class="search-error" data-hidden="true"></p>
 		</section>
+		<section class="section section--last-searched">
+			<h1 class="section__title">Last Searched</h1>
+			<ul class="last-searched__list"></ul>
+		</section>
 		<template id="current-weather__template">
 			<section class="section section--current">
 				<div class="current__location">
@@ -200,6 +204,23 @@
 				</ul>
 				<button class="more-info">More Info</button>
 			</section>
+		</template>
+		<template id="last-searched-item__template">
+			<li class="last-searched__item">
+				<img
+					src="https://openweathermap.org/img/wn/02d@2x.png"
+					alt="Weather icon"
+					data-icon
+				/>
+				<div class="last-searched__info">
+					<span class="last-searched__city"></span>
+					<div class="">
+						<span class="last-searched__temp"></span
+						><span data-temp-unit>&deg;C</span>
+					</div>
+					<span class="last-searched__date"></span>
+				</div>
+			</li>
 		</template>
 		<script src="script.js" type="module"></script>
 	</body>

@@ -8,9 +8,13 @@ const weather = new Weather(API_KEY);
 const currentWeatherTemplate = document.getElementById(
 	"current-weather__template"
 );
+const lastSearchedItemTemplate = document.getElementById(
+	"last-searched-item__template"
+);
 const locationInput = document.querySelector("[data-input]");
 const weatherButton = document.querySelector("[data-button]");
 const searchError = document.querySelector(".search-error");
+const lastSearchedList = document.querySelector(".last-searched__list");
 
 const LOCAL_STORAGE_CITIES_WEATHER_DATA_KEY = "weather.app.cities.weather.data";
 let citiesWeatherData =
@@ -29,6 +33,8 @@ let isFirstTime = false;
 
 let refreshTimeout;
 let globalWeatherData;
+
+showLastSearched();
 
 weatherButton.addEventListener("click", (event) => {
 	event.preventDefault();
@@ -197,6 +203,14 @@ function displayUNIXDate(unix) {
 	});
 }
 
+function displayShortDate(date) {
+	const shortDate = new Date(date);
+	return new Intl.DateTimeFormat(undefined, {
+		dateStyle: "short",
+		timeStyle: "short",
+	}).format(shortDate);
+}
+
 function displayUNIXTime(unix) {
 	const time = new Date(unix * 1000);
 	return new Intl.DateTimeFormat(undefined, {
@@ -206,10 +220,61 @@ function displayUNIXTime(unix) {
 }
 
 function saveCitiesWeatherData() {
+	citiesWeatherData.sort((a, b) => {
+		let firstDate = new Date(a.lastUpdated);
+		let secondDate = new Date(b.lastUpdated);
+
+		if (secondDate < firstDate) return -1;
+		if (secondDate > firstDate) return 1;
+		return 0;
+	});
+
+	// Useless?
+	while (citiesWeatherData.length > 10) {
+		console.log(citiesWeatherData);
+		let min = new Date(citiesWeatherData[0].lastUpdated);
+		let index = 0;
+		for (let i = citiesWeatherData.length - 1; i > 0; i--) {
+			if (new Date(citiesWeatherData[i].lastUpdated) < min) {
+				min = new Date(citiesWeatherData[i].lastUpdated);
+				index = i;
+				console.log("min");
+			}
+			console.log(i);
+		}
+		console.log("Removed: ");
+		console.log(citiesWeatherData[index]);
+		citiesWeatherData.splice(index, 1);
+		console.log(citiesWeatherData);
+	}
+
 	localStorage.setItem(
 		LOCAL_STORAGE_CITIES_WEATHER_DATA_KEY,
 		JSON.stringify(citiesWeatherData)
 	);
+
+	showLastSearched();
+}
+
+function showLastSearched() {
+	lastSearchedList.innerHTML = "";
+
+	citiesWeatherData.forEach((el) => {
+		let item = document.importNode(lastSearchedItemTemplate.content, true);
+
+		item.querySelector("[data-icon]").src = weather.getWeatherIcon(
+			el.weatherData.weather[0].icon
+		);
+		item.querySelector(".last-searched__city").innerHTML = el.weatherData.name;
+		item.querySelector(".last-searched__temp").innerHTML = displayTemp(
+			el.weatherData.main.temp
+		);
+		item.querySelector(".last-searched__date").innerHTML = displayShortDate(
+			el.lastUpdated
+		);
+
+		lastSearchedList.appendChild(item);
+	});
 }
 
 function checkCitiesWeatherData(city) {
