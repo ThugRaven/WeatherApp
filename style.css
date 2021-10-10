@@ -66,6 +66,10 @@ body {
 	background-color: var(--clr-accent);
 }
 
+::selection {
+	background-color: var(--clr-accent);
+}
+
 /* SECTION MAIN */
 
 .section {

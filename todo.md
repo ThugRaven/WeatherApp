@@ -17,4 +17,3 @@
   - [ ] Use history API to render data according to history state (back button, etc.)
   - [ ] Search by coordinates
   - [ ] Change temperature unit on click from Celsius to Fahrenheit and back
-- [ ] Add section (to the right?) with last searched places (City name, country, date, temperature)
