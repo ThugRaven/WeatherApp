@@ -41,8 +41,11 @@ weatherButton.addEventListener("click", (event) => {
 	const location = locationInput.value.trim().toLowerCase();
 	if (location == null || location === "") return;
 
-	let cityData = checkCitiesWeatherData(location);
+	addCurrentWeatherSection(location);
+	updateCurrentWeatherSection(location);
+});
 
+function addCurrentWeatherSection(location) {
 	if (document.body.querySelector(".section--current") == null) {
 		currentSection = document.importNode(currentWeatherTemplate.content, true);
 		isFirstTime = true;
@@ -67,7 +70,10 @@ weatherButton.addEventListener("click", (event) => {
 
 	const refreshIcon = currentSection.querySelector(".refresh-icon");
 	setRefreshTimeout(location, refreshIcon);
+}
 
+function updateCurrentWeatherSection(location) {
+	let cityData = checkCitiesWeatherData(location);
 	if (cityData) {
 		if (isUpdateAvailable(location)) {
 			callCurrentWeather(location);
@@ -82,7 +88,7 @@ weatherButton.addEventListener("click", (event) => {
 	} else {
 		callCurrentWeather(location);
 	}
-});
+}
 
 function callCurrentWeather(location) {
 	weather
@@ -229,6 +235,8 @@ function saveCitiesWeatherData() {
 		return 0;
 	});
 
+	// Check for same name in the weatherData.name to prevent duplication of same cities but with different languages
+
 	// Useless?
 	while (citiesWeatherData.length > 10) {
 		console.log(citiesWeatherData);
@@ -272,6 +280,13 @@ function showLastSearched() {
 		item.querySelector(".last-searched__date").innerHTML = displayShortDate(
 			el.lastUpdated
 		);
+		item.querySelector(".last-searched__item").addEventListener("click", () => {
+			console.log(el.weatherData.name);
+			let location = el.weatherData.name.toLowerCase();
+			addCurrentWeatherSection(location);
+			updateCurrentWeatherSection(location);
+			locationInput.value = el.weatherData.name;
+		});
 
 		lastSearchedList.appendChild(item);
 	});
@@ -345,21 +360,21 @@ function callOneCall() {
 			`Lat: ${globalWeatherData.coord.lat}, Lon: ${globalWeatherData.coord.lon}`
 		);
 
-		weather
-			.getOneCallByLatLong(
-				globalWeatherData.coord.lat,
-				globalWeatherData.coord.lon
-			)
-			.then((weatherData) => {
-				console.log("Call One Call API");
-				console.log(weatherData);
-			})
-			.catch((err) => {
-				console.error(err);
+		// weather
+		// 	.getOneCallByLatLong(
+		// 		globalWeatherData.coord.lat,
+		// 		globalWeatherData.coord.lon
+		// 	)
+		// 	.then((weatherData) => {
+		// 		console.log("Call One Call API");
+		// 		console.log(weatherData);
+		// 	})
+		// 	.catch((err) => {
+		// 		console.error(err);
 
-				if (err.message == 404) {
-				} else {
-				}
-			});
+		// 		if (err.message == 404) {
+		// 		} else {
+		// 		}
+		// 	});
 	}
 }
