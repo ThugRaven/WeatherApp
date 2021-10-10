@@ -5,6 +5,7 @@ import * as constants from "./constants.js";
 const weather = new Weather(API_KEY);
 // weather.setUnits("standard");
 
+const mainContent = document.querySelector(".main");
 const currentWeatherTemplate = document.getElementById(
 	"current-weather__template"
 );
@@ -46,7 +47,7 @@ weatherButton.addEventListener("click", (event) => {
 });
 
 function addCurrentWeatherSection(location) {
-	if (document.body.querySelector(".section--current") == null) {
+	if (mainContent.querySelector(".section--current") == null) {
 		currentSection = document.importNode(currentWeatherTemplate.content, true);
 		isFirstTime = true;
 
@@ -83,7 +84,17 @@ function updateCurrentWeatherSection(location) {
 			displayData(currentSection, cityData.weatherData);
 			globalWeatherData = cityData.weatherData;
 
-			console.log("No Update");
+			console.log("No Data Update");
+
+			let index = citiesWeatherData.findIndex((el) => el.city == location);
+			if (index < 0) {
+				index = citiesWeatherData.findIndex(
+					(el) => el.weatherData.name == location
+				);
+			}
+			citiesWeatherData[index].lastUpdated = new Date();
+			saveCitiesWeatherData();
+			console.log("Update Date");
 		}
 	} else {
 		callCurrentWeather(location);
@@ -133,7 +144,7 @@ function callCurrentWeather(location) {
 
 			if (refreshTimeout) clearTimeout(refreshTimeout);
 			if (!isFirstTime) {
-				document.body.removeChild(currentSection);
+				mainContent.removeChild(currentSection);
 			}
 
 			searchError.dataset.hidden = false;
@@ -190,7 +201,7 @@ function displayData(container, weatherData) {
 	} else weatherPrecipitation.innerHTML = "0";
 
 	if (isFirstTime) {
-		document.body.appendChild(currentSection);
+		mainContent.appendChild(currentSection);
 	}
 }
 
@@ -273,7 +284,9 @@ function showLastSearched() {
 		item.querySelector("[data-icon]").src = weather.getWeatherIcon(
 			el.weatherData.weather[0].icon
 		);
-		item.querySelector(".last-searched__city").innerHTML = el.weatherData.name;
+		item.querySelector(
+			".last-searched__city"
+		).innerHTML = `${el.weatherData.name}, ${el.weatherData.sys.country}`;
 		item.querySelector(".last-searched__temp").innerHTML = displayTemp(
 			el.weatherData.main.temp
 		);
