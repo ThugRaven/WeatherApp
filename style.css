@@ -600,6 +600,7 @@ body {
 	height: 100%;
 	justify-content: space-evenly;
 	flex-direction: row;
+	flex-wrap: wrap;
 }
 
 .daily__info {
@@ -654,4 +655,52 @@ body {
 
 .minmax-icon--min {
 	fill: hsl(200, 100%, 60%);
+}
+
+.minute__info {
+	width: 100%;
+}
+
+.chart__container {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+canvas {
+	width: 100% !important;
+}
+
+.minute__list {
+	display: flex;
+	align-items: flex-end;
+	height: 100%;
+	margin: 0em;
+	list-style-type: none;
+}
+
+.minute__list li {
+	width: 100%;
+	height: 100%;
+	position: relative;
+	background-color: #1e3559;
+	border-top: 2px solid #8ab4f8;
+}
+
+.minute__list li::before {
+	content: attr(data-precipitation);
+	position: absolute;
+	top: -2em;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	opacity: 0;
+	visibility: hidden;
+	transform: translate(-50%, 0);
+}
+
+.minute__list li:hover::before {
+	opacity: 1;
+	visibility: visible;
 }

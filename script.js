@@ -408,6 +408,7 @@ function callOneCall() {
 					weatherData.current
 				);
 				displayDailyForecast(weatherData.daily);
+				displayMinuteForecast(weatherData.minutely);
 			})
 			.catch((err) => {
 				console.error(err);
@@ -645,7 +646,9 @@ function displayDailyForecastDetails(weatherData) {
 		weatherData.dew_point
 	);
 	container.querySelector("[data-uvi]").innerHTML = weatherData.uvi;
-	container.querySelector("[data-pop]").innerHTML = (weatherData.pop * 100).toFixed(0);
+	container.querySelector("[data-pop]").innerHTML = (
+		weatherData.pop * 100
+	).toFixed(0);
 	container.querySelector("[data-moonrise]").innerHTML = displayUNIXTime(
 		weatherData.moonrise
 	);
@@ -677,4 +680,64 @@ function getMoonPhase(phase) {
 	} else if (phase > 0.75 && phase < 1) {
 		return "Waning Crescent";
 	}
+}
+
+function displayMinuteForecast(weatherData) {
+	// const minuteList = document.querySelector(".minute__list");
+
+	// // const height = minuteList.offsetHeight;
+	// let height = 100;
+	// console.log(height);
+
+	// weatherData.forEach((el, index) => {
+	// 	let item = document.createElement("li");
+	// 	item.title = el.precipitation;
+	// 	item.dataset.precipitation = el.precipitation;
+	// 	item.style.height = `${height * el.precipitation}px`;
+
+	// 	minuteList.appendChild(item);
+	// });
+
+
+	// let precipitationData = [];
+	// let labels = [];
+
+	// weatherData.forEach((el) => {
+	// 	precipitationData.push(el.precipitation);
+	// 	labels.push(displayUNIXTime(el.dt));
+	// });
+
+	// console.log(weatherData);
+
+	// const myChart = new Chart(document.getElementById("myChart"), {
+	// 	type: "bar",
+	// 	responsive: true,
+	// 	data: {
+	// 		labels: labels,
+	// 		datasets: [
+	// 			{
+	// 				label: "Precipitation volume",
+	// 				data: precipitationData,
+	// 				backgroundColor: "#1e3559",
+	// 				borderColor: "#8ab4f8",
+	// 				borderWidth: {
+	// 					top: 2,
+	// 					right: 0,
+	// 					bottom: 0,
+	// 					left: 0,
+	// 				},
+	// 				barThickness: "flex",
+	// 				categoryPercentage: 1.0,
+	// 				barPercentage: 1.0,
+	// 			},
+	// 		],
+	// 	},
+	// 	options: {
+	// 		scales: {
+	// 			y: {
+	// 				beginAtZero: true,
+	// 			},
+	// 		},
+	// 	},
+	// });
 }
