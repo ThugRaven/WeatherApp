@@ -12,10 +12,13 @@ const currentWeatherTemplate = document.getElementById(
 const lastSearchedItemTemplate = document.getElementById(
 	"last-searched-item__template"
 );
+const forecastItemTemplate = document.getElementById("forecast-item__template");
 const locationInput = document.querySelector("[data-input]");
 const weatherButton = document.querySelector("[data-button]");
 const searchError = document.querySelector(".search-error");
 const lastSearchedList = document.querySelector(".last-searched__list");
+const normalLayout = document.querySelector(".normal-layout");
+const fullLayout = document.querySelector(".full-layout");
 
 const LOCAL_STORAGE_CITIES_WEATHER_DATA_KEY = "weather.app.cities.weather.data";
 let citiesWeatherData =
@@ -182,6 +185,8 @@ function displayData(container, weatherData) {
 	weatherTemp.innerHTML = displayTemp(weatherData.main.temp);
 	weatherFeelsTemp.innerHTML = displayTemp(weatherData.main.feels_like);
 	weatherIcon.src = weather.getWeatherIcon(weatherData.weather[0].icon);
+	weatherIcon.alt = weatherData.weather[0].main;
+	weatherIcon.title = weatherData.weather[0].main;
 	weatherMainDesc.innerHTML = weatherData.weather[0].main;
 	weatherSecondDesc.innerHTML = weatherData.weather[0].description;
 	weatherPressure.innerHTML = weatherData.main.pressure;
@@ -191,14 +196,21 @@ function displayData(container, weatherData) {
 	weatherWind.innerHTML = weatherData.wind.speed;
 	weatherSunset.innerHTML = displayUNIXTime(weatherData.sys.sunset);
 	weatherCloudiness.innerHTML = weatherData.clouds.all;
-	weatherWindDirection.innerHTML = `${weatherData.wind.deg}&deg;`;
+	weatherWindDirection.innerHTML = `${weatherData.wind.deg}°`;
 	weatherWindPointer.style.setProperty(
 		"transform",
 		`rotate(${weatherData.wind.deg}deg)`
 	);
 	if (weatherData.rain != null && weatherData.rain["1h"] != null) {
 		weatherPrecipitation.innerHTML = weatherData.rain["1h"];
-	} else weatherPrecipitation.innerHTML = "0";
+		weatherPrecipitation.title = `${weatherData.rain["1h"]}mm/h of Rain`;
+	} else if (weatherData.snow != null && weatherData.snow["1h"] != null) {
+		weatherPrecipitation.innerHTML = weatherData.snow["1h"];
+		weatherPrecipitation.title = `${weatherData.snow["1h"]}mm/h of Snow`;
+	} else {
+		weatherPrecipitation.innerHTML = "0";
+		weatherPrecipitation.title = "";
+	}
 
 	if (isFirstTime) {
 		mainContent.appendChild(currentSection);
@@ -209,15 +221,18 @@ function displayTemp(temp) {
 	return Math.round(temp);
 }
 
-function displayUNIXDate(unix) {
+function displayUNIXDate(unix, options) {
 	const date = new Date(unix * 1000);
-	return date.toLocaleDateString(undefined, {
-		weekday: "long",
-		day: "numeric",
-		month: "short",
-		hour: "numeric",
-		minute: "numeric",
-	});
+	if (options) {
+		return date.toLocaleDateString(undefined, options);
+	} else
+		return date.toLocaleDateString(undefined, {
+			weekday: "long",
+			day: "numeric",
+			month: "short",
+			hour: "numeric",
+			minute: "numeric",
+		});
 }
 
 function displayShortDate(date) {
@@ -284,6 +299,10 @@ function showLastSearched() {
 		item.querySelector("[data-icon]").src = weather.getWeatherIcon(
 			el.weatherData.weather[0].icon
 		);
+		item.querySelector(
+			"[data-icon]"
+		).title = `${el.weatherData.weather[0].main}`;
+
 		item.querySelector(
 			".last-searched__city"
 		).innerHTML = `${el.weatherData.name}, ${el.weatherData.sys.country}`;
@@ -373,21 +392,289 @@ function callOneCall() {
 			`Lat: ${globalWeatherData.coord.lat}, Lon: ${globalWeatherData.coord.lon}`
 		);
 
-		// weather
-		// 	.getOneCallByLatLong(
-		// 		globalWeatherData.coord.lat,
-		// 		globalWeatherData.coord.lon
-		// 	)
-		// 	.then((weatherData) => {
-		// 		console.log("Call One Call API");
-		// 		console.log(weatherData);
-		// 	})
-		// 	.catch((err) => {
-		// 		console.error(err);
+		normalLayout.dataset.hidden = true;
+		fullLayout.dataset.hidden = false;
+		weather
+			.getOneCallByLatLong(
+				globalWeatherData.coord.lat,
+				globalWeatherData.coord.lon
+			)
+			.then((weatherData) => {
+				console.log("Call One Call API");
+				console.log(weatherData);
 
-		// 		if (err.message == 404) {
-		// 		} else {
-		// 		}
-		// 	});
+				displayOneCallData(
+					document.querySelector(".section--current-full"),
+					weatherData.current
+				);
+				displayDailyForecast(weatherData.daily);
+			})
+			.catch((err) => {
+				console.error(err);
+
+				if (err.message == 404) {
+				} else {
+				}
+			});
+	}
+}
+
+function displayOneCallData(container, weatherData) {
+	document.title = `Weather App | ${globalWeatherData.name} Forecast`;
+
+	const weatherPrecipitation = container.querySelector("[data-precipitation]");
+
+	container.querySelector(
+		"[data-location]"
+	).innerHTML = `${globalWeatherData.name}, ${globalWeatherData.sys.country}`;
+	container.querySelector("[data-date]").innerHTML = displayUNIXDate(
+		weatherData.dt
+	);
+	container.querySelector("[data-temp]").innerHTML = displayTemp(
+		weatherData.temp
+	);
+	container.querySelector("[data-temp-feels]").innerHTML = displayTemp(
+		weatherData.feels_like
+	);
+	container.querySelector("[data-icon]").src = weather.getWeatherIcon(
+		weatherData.weather[0].icon
+	);
+	container.querySelector("[data-icon]").alt = weatherData.weather[0].main;
+	container.querySelector("[data-icon]").title = weatherData.weather[0].main;
+	container.querySelector("[data-main-desc]").innerHTML =
+		weatherData.weather[0].main;
+	container.querySelector("[data-second-desc]").innerHTML =
+		weatherData.weather[0].description;
+	container.querySelector("[data-pressure]").innerHTML = weatherData.pressure;
+	container.querySelector("[data-visibility]").innerHTML =
+		Math.round(weatherData.visibility / 100) / 10;
+	container.querySelector("[data-humidity]").innerHTML = weatherData.humidity;
+	container.querySelector("[data-sunrise]").innerHTML = displayUNIXTime(
+		weatherData.sunrise
+	);
+	container.querySelector("[data-wind]").innerHTML = weatherData.wind_speed;
+	container.querySelector("[data-sunset]").innerHTML = displayUNIXTime(
+		weatherData.sunset
+	);
+	container.querySelector("[data-cloudiness]").innerHTML = weatherData.clouds;
+	container.querySelector(
+		"[data-wind-deg]"
+	).innerHTML = `${weatherData.wind_deg}°`;
+	container
+		.querySelector(".wind-pointer")
+		.style.setProperty("transform", `rotate(${weatherData.wind_deg}deg)`);
+	if (weatherData.rain != null && weatherData.rain["1h"] != null) {
+		weatherPrecipitation.innerHTML = weatherData.rain["1h"];
+		weatherPrecipitation.title = `${weatherData.rain["1h"]}mm/h of Rain`;
+	} else if (weatherData.snow != null && weatherData.snow["1h"] != null) {
+		weatherPrecipitation.innerHTML = weatherData.snow["1h"];
+		weatherPrecipitation.title = `${weatherData.snow["1h"]}mm/h of Snow`;
+	} else {
+		weatherPrecipitation.innerHTML = "0";
+		weatherPrecipitation.title = "";
+	}
+	container.querySelector("[data-dew-point]").innerHTML = displayTemp(
+		weatherData.dew_point
+	);
+
+	let compassSector = [
+		"N",
+		"NNE",
+		"NE",
+		"ENE",
+		"E",
+		"ESE",
+		"SE",
+		"SSE",
+		"S",
+		"SSW",
+		"SW",
+		"WSW",
+		"W",
+		"WNW",
+		"NW",
+		"NNW",
+		"N",
+	];
+	container.querySelector("[data-direction]").innerHTML =
+		compassSector[(weatherData.wind_deg / 22.5).toFixed(0)];
+	container.querySelector("[data-uvi]").innerHTML = weatherData.uvi;
+}
+
+function displayDailyForecast(weatherData) {
+	const forecastList = document.querySelector(".forecast__list");
+	forecastList.innerHTML = "";
+	let lastIndex = 0;
+
+	weatherData.forEach((el, index) => {
+		let item = document.importNode(forecastItemTemplate.content, true);
+
+		item.querySelector("[data-date]").innerHTML = displayUNIXDate(el.dt, {
+			weekday: "short",
+			day: "numeric",
+			month: "short",
+		});
+		item.querySelector("[data-icon]").src = weather.getWeatherIcon(
+			el.weather[0].icon
+		);
+		item.querySelector("[data-icon]").alt = el.weather[0].main;
+		item.querySelector("[data-icon]").title = el.weather[0].main;
+
+		item.querySelector("[data-main-desc]").innerHTML = el.weather[0].main;
+		item.querySelector("[data-temp-day]").innerHTML = `${displayTemp(
+			el.temp.day
+		)}°`;
+		item.querySelector("[data-temp-night]").innerHTML = `${displayTemp(
+			el.temp.night
+		)}°`;
+
+		let itemElement = item.querySelector("[data-item]");
+		if (index == 0) {
+			itemElement.classList.add("forecast__item--active");
+			displayDailyForecastDetails(weatherData[index]);
+		}
+
+		itemElement.addEventListener("click", () => {
+			if (lastIndex == index) return;
+
+			console.log(weatherData[index]);
+			lastIndex = index;
+			removeActiveClasses();
+			itemElement.classList.add("forecast__item--active");
+			displayDailyForecastDetails(weatherData[index]);
+		});
+
+		itemElement.style.setProperty("animation-delay", `${index * 25}ms`);
+
+		forecastList.appendChild(item);
+	});
+}
+
+function removeActiveClasses() {
+	const forecastItems = document.querySelectorAll("[data-item]");
+	forecastItems.forEach((el) => {
+		if (el.classList.contains("forecast__item--active")) {
+			el.classList.remove("forecast__item--active");
+		}
+	});
+}
+
+function displayDailyForecastDetails(weatherData) {
+	const container = document.querySelector(".section--forecast-details");
+
+	const weatherPrecipitation = container.querySelector("[data-precipitation]");
+
+	container.querySelector(
+		"[data-location]"
+	).innerHTML = `${globalWeatherData.name}`;
+	container.querySelector("[data-date]").innerHTML = displayUNIXDate(
+		weatherData.dt,
+		{
+			dateStyle: "full",
+		}
+	);
+	container.querySelector("[data-temp]").innerHTML = displayTemp(
+		weatherData.temp.day
+	);
+	container.querySelector("[data-temp-feels]").innerHTML = displayTemp(
+		weatherData.feels_like.day
+	);
+	container.querySelector("[data-temp-max]").innerHTML = `${displayTemp(
+		weatherData.temp.max
+	)}°`;
+	container.querySelector("[data-temp-min]").innerHTML = `${displayTemp(
+		weatherData.temp.min
+	)}°`;
+	container.querySelector("[data-icon]").src = weather.getWeatherIcon(
+		weatherData.weather[0].icon
+	);
+	container.querySelector("[data-icon]").alt = weatherData.weather[0].main;
+	container.querySelector("[data-icon]").title = weatherData.weather[0].main;
+	container.querySelector("[data-main-desc]").innerHTML =
+		weatherData.weather[0].main;
+	container.querySelector("[data-second-desc]").innerHTML =
+		weatherData.weather[0].description;
+	container.querySelector("[data-pressure]").innerHTML = weatherData.pressure;
+	container.querySelector("[data-wind]").innerHTML = weatherData.wind_speed;
+	container.querySelector("[data-humidity]").innerHTML = weatherData.humidity;
+	container.querySelector("[data-sunrise]").innerHTML = displayUNIXTime(
+		weatherData.sunrise
+	);
+	container.querySelector(
+		"[data-wind-deg]"
+	).innerHTML = `${weatherData.wind_deg}°`;
+	container
+		.querySelector(".wind-pointer")
+		.style.setProperty("transform", `rotate(${weatherData.wind_deg}deg)`);
+	container.querySelector("[data-sunset]").innerHTML = displayUNIXTime(
+		weatherData.sunset
+	);
+	container.querySelector("[data-cloudiness]").innerHTML = weatherData.clouds;
+	let compassSector = [
+		"N",
+		"NNE",
+		"NE",
+		"ENE",
+		"E",
+		"ESE",
+		"SE",
+		"SSE",
+		"S",
+		"SSW",
+		"SW",
+		"WSW",
+		"W",
+		"WNW",
+		"NW",
+		"NNW",
+		"N",
+	];
+	container.querySelector("[data-direction]").innerHTML =
+		compassSector[(weatherData.wind_deg / 22.5).toFixed(0)];
+	if (weatherData.rain != null) {
+		weatherPrecipitation.innerHTML = weatherData.rain;
+		weatherPrecipitation.title = `${weatherData.rain}mm of Rain`;
+	} else if (weatherData.snow != null) {
+		weatherPrecipitation.innerHTML = weatherData.snow;
+		weatherPrecipitation.title = `${weatherData.snow}mm of Snow`;
+	} else {
+		weatherPrecipitation.innerHTML = "0";
+		weatherPrecipitation.title = "";
+	}
+	container.querySelector("[data-dew-point]").innerHTML = displayTemp(
+		weatherData.dew_point
+	);
+	container.querySelector("[data-uvi]").innerHTML = weatherData.uvi;
+	container.querySelector("[data-pop]").innerHTML = (weatherData.pop * 100).toFixed(0);
+	container.querySelector("[data-moonrise]").innerHTML = displayUNIXTime(
+		weatherData.moonrise
+	);
+	container.querySelector("[data-moon-phase]").innerHTML =
+		weatherData.moon_phase;
+	container.querySelector("[data-moon-phase]").title = `${
+		weatherData.moon_phase
+	} - ${getMoonPhase(weatherData.moon_phase)}`;
+	container.querySelector("[data-moonset]").innerHTML = displayUNIXTime(
+		weatherData.moonset
+	);
+}
+
+function getMoonPhase(phase) {
+	if (phase == 0 || phase == 1) {
+		return "New Moon";
+	} else if (phase > 0 && phase < 0.25) {
+		return "Waxing Crescent";
+	} else if (phase == 0.25) {
+		return "First Quarter";
+	} else if (phase > 0.25 && phase < 0.5) {
+		return "Waxing Gibous";
+	} else if (phase == 0.5) {
+		return "Full Moon";
+	} else if (phase > 0.5 && phase < 0.75) {
+		return "Waning Gibbous";
+	} else if (phase == 0.75) {
+		return "Last Quarter";
+	} else if (phase > 0.75 && phase < 1) {
+		return "Waning Crescent";
 	}
 }

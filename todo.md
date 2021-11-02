@@ -13,7 +13,6 @@
   - [ ] On search move logo to the left and show "Weather App" title
   - [ ] Skeleton animation after search
 - [ ] Display data after search
-  - [ ] More info button, displays data from One Call API (minute, hourly, daily forecast and more)
   - [ ] Use history API to render data according to history state (back button, etc.)
   - [ ] Search by coordinates
   - [ ] Change temperature unit on click from Celsius to Fahrenheit and back
