@@ -683,20 +683,30 @@ function getMoonPhase(phase) {
 }
 
 function displayMinuteForecast(weatherData) {
-	// const minuteList = document.querySelector(".minute__list");
+	const minuteList = document.querySelector(".minute__list");
 
-	// // const height = minuteList.offsetHeight;
-	// let height = 100;
-	// console.log(height);
+	let maxHeight = 0;
+	for (let i = 0; i < weatherData.length; i++) {
+		if(maxHeight < weatherData[i].precipitation) {
+			maxHeight = weatherData[i].precipitation;
+		}
+	}
+	console.log(maxHeight);
 
-	// weatherData.forEach((el, index) => {
-	// 	let item = document.createElement("li");
-	// 	item.title = el.precipitation;
-	// 	item.dataset.precipitation = el.precipitation;
-	// 	item.style.height = `${height * el.precipitation}px`;
+	weatherData.forEach((el, index) => {
+		let item = document.createElement("li");
+		item.title = `${displayUNIXTime(el.dt)} - ${el.precipitation}mm`;
+		item.dataset.precipitation = `${displayUNIXTime(el.dt)} ${el.precipitation.toFixed(2)}`;
+		item.style.height = `${(el.precipitation / maxHeight) * 100}%`;
+		
+		// if (index % 10 == 0) {
+		// 	let span = document.createElement("span");
+		// 	span.innerHTML = `${displayUNIXTime(el.dt)}`;
+		// 	item.appendChild(span);
+		// }
 
-	// 	minuteList.appendChild(item);
-	// });
+		minuteList.appendChild(item);
+	});
 
 
 	// let precipitationData = [];

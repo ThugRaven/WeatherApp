@@ -659,6 +659,7 @@ body {
 
 .minute__info {
 	width: 100%;
+	height: 10%;
 }
 
 .chart__container {
@@ -690,17 +691,46 @@ canvas {
 .minute__list li::before {
 	content: attr(data-precipitation);
 	position: absolute;
-	top: -2em;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	width: 100%;
+	z-index: 3;
+	bottom: 100%;
+	left: 50%;
+	margin-bottom: 1em;
+	padding: 0.25em 0.5em;
+	background-color: var(--clr-primary-light);
+	border-radius: 0.5em;
+	text-align: center;
 	opacity: 0;
 	visibility: hidden;
-	transform: translate(-50%, 0);
+	transform: translate(-50%, 25%);
+	transition: transform 150ms, opacity 150ms, visibility 150ms;
+}
+
+.minute__list li::after {
+	content: "";
+	position: absolute;
+	z-index: 2;
+	bottom: 100%;
+	left: 50%;
+	width: 10px;
+	height: 10px;
+	margin-bottom: 0.75em;
+	background-color: var(--clr-primary-light);
+	opacity: 0;
+	visibility: hidden;
+	transform: translate(-50%, 25%) rotate(45deg);
+	transition: transform 150ms, opacity 150ms, visibility 150ms;
+}
+
+.minute__list li:hover::before,
+.minute__list li:hover::after {
+	opacity: 1;
+	visibility: visible;
 }
 
 .minute__list li:hover::before {
-	opacity: 1;
-	visibility: visible;
+	transform: translate(-50%, 0%);
+}
+
+.minute__list li:hover::after {
+	transform: translate(-50%, 0%) rotate(45deg);
 }
