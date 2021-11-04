@@ -529,7 +529,8 @@ function displayDailyForecast(weatherData) {
 			el.temp.night
 		)}°`;
 
-		let itemElement = item.querySelector("[data-item]");
+		const itemElement = item.querySelector("[data-item]");
+
 		if (index == 0) {
 			itemElement.classList.add("forecast__item--active");
 			displayDailyForecastDetails(weatherData[index]);
@@ -542,6 +543,11 @@ function displayDailyForecast(weatherData) {
 			lastIndex = index;
 			removeActiveClasses();
 			itemElement.classList.add("forecast__item--active");
+			if (index == 0) {
+				document.querySelector(".minute__info").dataset.hidden = false;
+			} else {
+				document.querySelector(".minute__info").dataset.hidden = true;
+			}
 			displayDailyForecastDetails(weatherData[index]);
 		});
 
@@ -684,30 +690,37 @@ function getMoonPhase(phase) {
 
 function displayMinuteForecast(weatherData) {
 	const minuteList = document.querySelector(".minute__list");
+	const minuteTimeList = document.querySelector(".minute-time__list");
 
 	let maxHeight = 0;
 	for (let i = 0; i < weatherData.length; i++) {
-		if(maxHeight < weatherData[i].precipitation) {
+		if (maxHeight < weatherData[i].precipitation) {
 			maxHeight = weatherData[i].precipitation;
 		}
 	}
 	console.log(maxHeight);
 
+	// Precipitation will start in x min
+
 	weatherData.forEach((el, index) => {
 		let item = document.createElement("li");
-		item.title = `${displayUNIXTime(el.dt)} - ${el.precipitation}mm`;
-		item.dataset.precipitation = `${displayUNIXTime(el.dt)} ${el.precipitation.toFixed(2)}`;
-		item.style.height = `${(el.precipitation / maxHeight) * 100}%`;
-		
-		// if (index % 10 == 0) {
-		// 	let span = document.createElement("span");
-		// 	span.innerHTML = `${displayUNIXTime(el.dt)}`;
-		// 	item.appendChild(span);
-		// }
+		let time = document.createElement("li");
+
+		item.title = `${displayUNIXTime(el.dt)} - ${el.precipitation}mm/h`;
+		item.dataset.precipitation = `${displayUNIXTime(
+			el.dt
+		)} ${el.precipitation.toFixed(2)}`;
+		if (maxHeight != 0) {
+			item.style.height = `${(el.precipitation / maxHeight) * 100}%`;
+		}
+
+		if (index % 10 == 0) {
+			time.innerHTML = `${displayUNIXTime(el.dt)}`;
+		}
 
 		minuteList.appendChild(item);
+		minuteTimeList.appendChild(time);
 	});
-
 
 	// let precipitationData = [];
 	// let labels = [];
