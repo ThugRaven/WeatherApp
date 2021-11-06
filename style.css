@@ -12,8 +12,47 @@
 
 	--ff-primary: "Montserrat", sans-serif;
 	--ff-accent: "Lato", sans-serif;
+	--ff-color: hsl(0, 0%, 100%);
 
 	--fs-h1: 2em;
+	--fs-h2: 1.5em;
+
+	--chart-bg: #1e3559;
+	--chart-border: #8ab4f8;
+}
+/* 
+@media (prefers-color-scheme: dark) {
+	:root {
+		--clr-primary-light-100: hsl(0, 0%, 30%);
+		--clr-primary-light-200: hsl(0, 0%, 50%);
+		--clr-primary-light-300: hsl(0, 0%, 60%);
+		--clr-primary-light-400: hsl(0, 0%, 70%);
+		--clr-primary-light: hsl(0, 0%, 80%);
+		--clr-primary: hsl(0, 0%, 90%);
+		--clr-primary-dark: hsl(0, 0%, 100%);
+		--clr-light: hsl(0, 0%, 100%);
+
+		--ff-color: hsl(0, 0%, 25%);
+
+		--chart-bg: #e8f0fe;
+		--chart-border: #1a73e8;
+	}
+} */
+
+.light-mode {
+	--clr-primary-light-100: hsl(0, 0%, 30%);
+	--clr-primary-light-200: hsl(0, 0%, 50%);
+	--clr-primary-light-300: hsl(0, 0%, 60%);
+	--clr-primary-light-400: hsl(0, 0%, 70%);
+	--clr-primary-light: hsl(0, 0%, 80%);
+	--clr-primary: hsl(0, 0%, 90%);
+	--clr-primary-dark: hsl(0, 0%, 100%);
+	--clr-light: hsl(0, 0%, 100%);
+
+	--ff-color: hsl(0, 0%, 25%);
+
+	--chart-bg: #e8f0fe;
+	--chart-border: #1a73e8;
 }
 
 *,
@@ -31,7 +70,7 @@ body {
 	margin: 0;
 	background-color: var(--clr-primary);
 	font-family: var(--ff-primary);
-	color: var(--clr-light);
+	color: var(--ff-color);
 	/* display: grid;
 	grid-template-columns: auto 1fr auto;
 	grid-template-rows: 1fr; */
@@ -100,7 +139,9 @@ body {
 }
 
 .section__title {
+	margin: 0.75em 0.25em;
 	font-size: var(--fs-h1);
+	font-weight: 700;
 	letter-spacing: 0.05em;
 	text-align: center;
 }
@@ -128,18 +169,6 @@ body {
 	height: var(--size);
 }
 
-@keyframes sunAnimation {
-	0% {
-		transform: translateY(0%);
-	}
-	50% {
-		transform: translateY(15%);
-	}
-	100% {
-		transform: translateY(0%);
-	}
-}
-
 @keyframes sunAnimationRotate {
 	0% {
 		transform: rotate(0deg);
@@ -150,14 +179,31 @@ body {
 }
 
 .logo--sun {
+	position: absolute;
+	opacity: 1;
+	visibility: visible;
 	fill: var(--clr-accent);
-	animation: sunAnimation 5s ease-in-out infinite,
-		sunAnimationRotate 30s linear infinite;
+	animation: sunAnimationRotate 30s linear infinite;
+	transition: opacity 300ms ease-in-out, visibility 300ms ease-in-out;
+}
+
+.light-mode .logo--sun {
+	opacity: 0;
+	visibility: hidden;
+	transition: none;
 }
 
 .logo--moon {
-	fill: white;
-	display: none;
+	opacity: 0;
+	visibility: hidden;
+	fill: var(--clr-accent);
+	transition: none;
+}
+
+.light-mode .logo--moon {
+	opacity: 1;
+	visibility: visible;
+	transition: opacity 300ms ease-in-out, visibility 300ms ease-in-out;
 }
 
 @keyframes cloudAnimation {
@@ -183,13 +229,6 @@ body {
 	fill: gray;
 	animation: cloudAnimation 20s ease-in-out infinite;
 	transition: opacity 150ms;
-}
-
-.logos__title {
-	margin: 0.25em 0.75em;
-	text-shadow: 2px 2px 0px var(--clr-accent-dark);
-	font-size: var(--fs-h1);
-	letter-spacing: 0.05em;
 }
 
 .form {
@@ -320,6 +359,8 @@ body {
 
 .current__location-name {
 	margin: 0.5em 0;
+	font-size: var(--fs-h2);
+	font-weight: 700;
 }
 
 .pin-icon {
@@ -402,7 +443,7 @@ body {
 	background-color: var(--clr-primary);
 	border: 0;
 	border-radius: 0.5em;
-	color: white;
+	color: var(--ff-color);
 	font-family: var(--ff-primary);
 	font-size: 1em;
 	font-weight: 500;
@@ -666,7 +707,7 @@ body {
 	flex-direction: column;
 }
 
-.minute__chart{
+.minute__chart {
 	height: 100%;
 	display: flex;
 	flex-direction: column;
@@ -702,8 +743,8 @@ canvas {
 .minute__list li {
 	width: 100%;
 	position: relative;
-	background-color: #1e3559;
-	border-top: 2px solid #8ab4f8;
+	background-color: var(--chart-bg);
+	border-top: 2px solid var(--chart-border);
 }
 
 .minute-time__list li {

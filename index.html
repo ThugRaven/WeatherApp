@@ -23,7 +23,7 @@
 			<main class="main main--normal">
 				<section class="section section--main">
 					<div class="logos">
-						<div class="logos__icons">
+						<div class="logos__icons" data-theme-toggle>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								enable-background="new 0 0 24 24"
@@ -66,11 +66,8 @@
 								/>
 							</svg>
 						</div>
-						<div class="logos__title" data-hidden="true">
-							<h1 class="weather-app">Weather App</h1>
-						</div>
 					</div>
-					<h1 class="section__title">What's the weather like in...</h1>
+					<span class="section__title">What's the weather like in...</span>
 					<form class="form">
 						<input
 							type="text"
@@ -99,7 +96,7 @@
 			</main>
 			<aside class="aside aside--last-searched">
 				<section class="section section--last-searched">
-					<h1 class="section__title">Last Searched</h1>
+					<span class="section__title">Last Searched</span>
 					<ul class="last-searched__list"></ul>
 				</section>
 			</aside>
@@ -109,7 +106,7 @@
 			<aside class="aside aside--full-layout">
 				<section class="section section--main-full">
 					<div class="logos">
-						<div class="logos__icons">
+						<div class="logos__icons" data-theme-toggle>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								enable-background="new 0 0 24 24"
@@ -151,9 +148,6 @@
 									d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"
 								/>
 							</svg>
-						</div>
-						<div class="logos__title" data-hidden="true">
-							<h1 class="weather-app">Weather App</h1>
 						</div>
 					</div>
 					<form class="form">
@@ -197,7 +191,7 @@
 							/>
 							<circle cx="12" cy="9" r="2.5" />
 						</svg>
-						<h2 class="current__location-name" data-location></h2>
+						<span class="current__location-name" data-location></span>
 					</div>
 					<div class="current__date-wrapper">
 						<span class="current__date" data-date></span>
@@ -217,14 +211,14 @@
 						</svg>
 					</div>
 					<div class="current__temperature">
-						<h1 class="temp__value" data-temp></h1>
+						<span class="temp__value" data-temp></span>
 						<span class="temp__unit temp__unit--C" data-temp-unit>°C</span>
 					</div>
 					<div class="current__feels-like">
 						Feels like
-						<span class="temp__feels-value" data-temp-feels></span>°<span
+						<span class="temp__feels-value" data-temp-feels></span><span
 							data-temp-unit
-							>C</span
+							>°C</span
 						>
 					</div>
 					<img
@@ -309,7 +303,7 @@
 			</aside>
 			<main class="main main--forecast">
 				<section class="section section--forecast">
-					<h1 class="section__title">Daily Forecast</h1>
+					<span class="section__title">Daily Forecast</span>
 					<ul class="forecast__list"></ul>
 				</section>
 				<section class="section section--forecast-details">
@@ -322,9 +316,9 @@
 						</div>
 						<div class="daily__feels-like">
 							Feels like
-							<span class="temp__feels-value" data-temp-feels>15</span>°<span
+							<span class="temp__feels-value" data-temp-feels>15</span><span
 								data-temp-unit
-								>C</span
+								>°C</span
 							>
 						</div>
 						<img
@@ -493,10 +487,10 @@
 						/>
 						<circle cx="12" cy="9" r="2.5" />
 					</svg>
-					<h2 class="current__location-name"></h2>
+					<span class="current__location-name" data-location></span>
 				</div>
 				<div class="current__date-wrapper">
-					<span class="current__date"></span>
+					<span class="current__date" data-date></span>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						height="24px"
@@ -513,13 +507,13 @@
 					</svg>
 				</div>
 				<div class="current__temperature">
-					<h1 class="temp__value"></h1>
+					<span class="temp__value" data-temp></span>
 					<span class="temp__unit temp__unit--C" data-temp-unit>°C</span>
 				</div>
 				<div class="current__feels-like">
-					Feels like <span class="temp__feels-value"></span>°<span
+					Feels like <span class="temp__feels-value" data-temp-feels></span><span
 						data-temp-unit
-						>C</span
+						>°C</span
 					>
 				</div>
 				<img
@@ -527,8 +521,8 @@
 					alt="Weather icon"
 					data-icon
 				/>
-				<span class="current__main-desc"></span>
-				<span class="current__second-desc"></span>
+				<span class="current__main-desc" data-main-desc></span>
+				<span class="current__second-desc" data-second-desc></span>
 				<ul class="current__grid">
 					<li class="current__pressure">
 						<span class="row__title">Pressure</span>
@@ -623,5 +617,6 @@
 			</li>
 		</template>
 		<script src="script.js" type="module"></script>
+		<script src="theme.js"></script>
 	</body>
 </html>

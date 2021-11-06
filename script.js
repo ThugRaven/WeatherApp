@@ -3,7 +3,6 @@ import Weather from "./weather.js";
 import * as constants from "./constants.js";
 
 const weather = new Weather(API_KEY);
-// weather.setUnits("standard");
 
 const mainContent = document.querySelector(".main");
 const currentWeatherTemplate = document.getElementById(
@@ -162,45 +161,50 @@ function callCurrentWeather(location) {
 function displayData(container, weatherData) {
 	document.title = `Weather App | ${weatherData.name}`;
 
-	const weatherCity = container.querySelector(".current__location-name");
-	const weatherDate = container.querySelector(".current__date");
-	const weatherTemp = container.querySelector(".temp__value");
-	const weatherFeelsTemp = container.querySelector(".temp__feels-value");
-	const weatherIcon = container.querySelector("[data-icon]");
-	const weatherMainDesc = container.querySelector(".current__main-desc");
-	const weatherSecondDesc = container.querySelector(".current__second-desc");
-	const weatherPressure = container.querySelector("[data-pressure]");
-	const weatherVisibility = container.querySelector("[data-visibility]");
-	const weatherHumidity = container.querySelector("[data-humidity]");
-	const weatherSunrise = container.querySelector("[data-sunrise]");
-	const weatherWind = container.querySelector("[data-wind]");
-	const weatherSunset = container.querySelector("[data-sunset]");
-	const weatherCloudiness = container.querySelector("[data-cloudiness]");
-	const weatherWindDirection = container.querySelector("[data-wind-deg]");
-	const weatherWindPointer = container.querySelector(".wind-pointer");
 	const weatherPrecipitation = container.querySelector("[data-precipitation]");
 
-	weatherCity.innerHTML = `${weatherData.name}, ${weatherData.sys.country}`;
-	weatherDate.innerHTML = displayUNIXDate(weatherData.dt);
-	weatherTemp.innerHTML = displayTemp(weatherData.main.temp);
-	weatherFeelsTemp.innerHTML = displayTemp(weatherData.main.feels_like);
-	weatherIcon.src = weather.getWeatherIcon(weatherData.weather[0].icon);
-	weatherIcon.alt = weatherData.weather[0].main;
-	weatherIcon.title = weatherData.weather[0].main;
-	weatherMainDesc.innerHTML = weatherData.weather[0].main;
-	weatherSecondDesc.innerHTML = weatherData.weather[0].description;
-	weatherPressure.innerHTML = weatherData.main.pressure;
-	weatherVisibility.innerHTML = Math.round(weatherData.visibility / 100) / 10;
-	weatherHumidity.innerHTML = weatherData.main.humidity;
-	weatherSunrise.innerHTML = displayUNIXTime(weatherData.sys.sunrise);
-	weatherWind.innerHTML = weatherData.wind.speed;
-	weatherSunset.innerHTML = displayUNIXTime(weatherData.sys.sunset);
-	weatherCloudiness.innerHTML = weatherData.clouds.all;
-	weatherWindDirection.innerHTML = `${weatherData.wind.deg}°`;
-	weatherWindPointer.style.setProperty(
-		"transform",
-		`rotate(${weatherData.wind.deg}deg)`
+	container.querySelector(
+		"[data-location]"
+	).innerHTML = `${weatherData.name}, ${weatherData.sys.country}`;
+	container.querySelector("[data-date]").innerHTML = displayUNIXDate(
+		weatherData.dt
 	);
+	container.querySelector("[data-temp]").innerHTML = displayTemp(
+		weatherData.main.temp
+	);
+	container.querySelector("[data-temp-feels]").innerHTML = displayTemp(
+		weatherData.main.feels_like
+	);
+	container.querySelector("[data-icon]").src = weather.getWeatherIcon(
+		weatherData.weather[0].icon
+	);
+	container.querySelector("[data-icon]").alt = weatherData.weather[0].main;
+	container.querySelector("[data-icon]").title = weatherData.weather[0].main;
+	container.querySelector("[data-main-desc]").innerHTML =
+		weatherData.weather[0].main;
+	container.querySelector("[data-second-desc]").innerHTML =
+		weatherData.weather[0].description;
+	container.querySelector("[data-pressure]").innerHTML =
+		weatherData.main.pressure;
+	container.querySelector("[data-visibility]").innerHTML =
+		Math.round(weatherData.visibility / 100) / 10;
+	container.querySelector("[data-humidity]").innerHTML =
+		weatherData.main.humidity;
+	container.querySelector("[data-sunrise]").innerHTML = displayUNIXTime(
+		weatherData.sys.sunrise
+	);
+	container.querySelector("[data-wind]").innerHTML = weatherData.wind.speed;
+	container.querySelector("[data-sunset]").innerHTML = displayUNIXTime(
+		weatherData.sys.sunset
+	);
+	container.querySelector("[data-cloudiness]").innerHTML =
+		weatherData.clouds.all;
+	container.querySelector(
+		"[data-wind-deg]"
+	).innerHTML = `${weatherData.wind.deg}°`;
+	container
+		.querySelector(".wind-pointer")
+		.style.setProperty("transform", `rotate(${weatherData.wind.deg}deg)`);
 	if (weatherData.rain != null && weatherData.rain["1h"] != null) {
 		weatherPrecipitation.innerHTML = weatherData.rain["1h"];
 		weatherPrecipitation.title = `${weatherData.rain["1h"]}mm/h of Rain`;
@@ -403,6 +407,7 @@ function callOneCall() {
 				console.log("Call One Call API");
 				console.log(weatherData);
 
+				if (refreshTimeout) clearTimeout(refreshTimeout);
 				displayOneCallData(
 					document.querySelector(".section--current-full"),
 					weatherData.current
@@ -413,6 +418,7 @@ function callOneCall() {
 			.catch((err) => {
 				console.error(err);
 
+				if (refreshTimeout) clearTimeout(refreshTimeout);
 				if (err.message == 404) {
 				} else {
 				}
