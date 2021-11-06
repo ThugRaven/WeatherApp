@@ -698,9 +698,8 @@ function displayMinuteForecast(weatherData) {
 			maxHeight = weatherData[i].precipitation;
 		}
 	}
-	console.log(maxHeight);
 
-	// Precipitation will start in x min
+	displayPrecipitationMsg(weatherData);
 
 	weatherData.forEach((el, index) => {
 		let item = document.createElement("li");
@@ -763,4 +762,49 @@ function displayMinuteForecast(weatherData) {
 	// 		},
 	// 	},
 	// });
+}
+
+function displayPrecipitationMsg(weatherData) {
+	const minutePrecipitationMsg = document.querySelector(
+		".minute__precipitation-msg"
+	);
+
+	let precipitationStart = null;
+	let precipitationEnd = null;
+	let precipitationStartIndex = 0;
+	let precipitationEndIndex = 0;
+
+	for (let i = 0; i < weatherData.length; i++) {
+		if (!precipitationStart && weatherData[i].precipitation > 0) {
+			precipitationStart = weatherData[i].dt;
+			precipitationStartIndex = i;
+		} else if (precipitationStart && weatherData[i].precipitation > 0) {
+			precipitationEnd = weatherData[i].dt;
+			precipitationEndIndex = i;
+			if (
+				i < weatherData.length - 1 &&
+				weatherData[i + 1].precipitation === 0
+			) {
+				break;
+			}
+		}
+	}
+
+	if (!precipitationStart) {
+		minutePrecipitationMsg.innerHTML = "No precipitation within an hour";
+	} else if (precipitationStartIndex === 0 && precipitationEndIndex === 60) {
+		minutePrecipitationMsg.innerHTML = "Precipitation won't end within an hour";
+	} else if (precipitationStartIndex > 0) {
+		let difference =
+			(new Date(precipitationStart) - new Date(weatherData[0].dt)) / 60;
+		minutePrecipitationMsg.innerHTML = `Precipitation will start within ${difference} ${
+			difference === 1 ? "minute" : "minutes"
+		} (${displayUNIXTime(precipitationStart)})`;
+	} else if (precipitationEnd) {
+		let difference =
+			(new Date(precipitationEnd) - new Date(weatherData[0].dt)) / 60;
+		minutePrecipitationMsg.innerHTML = `Precipitation will end within ${difference} ${
+			difference === 1 ? "minute" : "minutes"
+		} (${displayUNIXTime(precipitationEnd)})`;
+	}
 }

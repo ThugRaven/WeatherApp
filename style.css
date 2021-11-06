@@ -356,7 +356,6 @@ body {
 .current__grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
-	grid-template-rows: 1fr 1fr;
 	list-style-type: none;
 	margin: 1em 0;
 	padding: 0em;
@@ -598,15 +597,18 @@ body {
 .section--forecast-details {
 	width: 100%;
 	height: 100%;
-	justify-content: space-evenly;
+	justify-content: space-around;
 	flex-direction: row;
 	flex-wrap: wrap;
+}
+
+.current__grid--forecast {
+	grid-template-columns: repeat(5, 1fr);
 }
 
 .daily__info {
 	display: flex;
 	flex-direction: column;
-	flex-basis: 50%;
 }
 
 .daily__location-name {
@@ -659,7 +661,13 @@ body {
 
 .minute__info {
 	width: 100%;
-	height: 10%;
+	height: 20%;
+	display: flex;
+	flex-direction: column;
+}
+
+.minute__chart{
+	height: 100%;
 	display: flex;
 	flex-direction: column;
 }
@@ -674,12 +682,20 @@ canvas {
 	width: 100% !important;
 }
 
-.minute__list,
-.minute-time__list {
+.minute__list {
 	display: flex;
 	align-items: flex-end;
 	height: 100%;
 	margin: 0em;
+	padding: 0em;
+	list-style-type: none;
+}
+
+.minute-time__list {
+	display: flex;
+	align-items: flex-end;
+	margin: 0em;
+	padding: 0em;
 	list-style-type: none;
 }
 

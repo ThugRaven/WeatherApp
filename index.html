@@ -376,7 +376,7 @@
 							>
 						</div>
 					</div>
-					<ul class="current__grid">
+					<ul class="current__grid current__grid--forecast">
 						<li>
 							<span class="row__title">Pressure</span>
 							<span class="row__value" data-pressure></span>
@@ -393,6 +393,16 @@
 							<span class="row__value" data-humidity></span>
 							<span class="row__unit">%</span>
 						</li>
+						<li>
+							<span class="row__title">Dew point</span>
+							<span class="row__value" data-dew-point></span>
+							<span class="row__unit"><span data-temp-unit>°C</span></span>
+						</li>
+						<li>
+							<span class="row__title">Moonrise</span>
+							<span class="row__value" data-moonrise></span>
+						</li>
+
 						<li>
 							<span class="row__title">Sunrise</span>
 							<span class="row__value" data-sunrise></span>
@@ -419,6 +429,14 @@
 							<span class="row__value" data-sunset></span>
 						</li>
 						<li>
+							<span class="row__title">UV index</span>
+							<span class="row__value" data-uvi></span>
+						</li>
+						<li>
+							<span class="row__title">Moon phase</span>
+							<span class="row__value" data-moon-phase></span>
+						</li>
+						<li>
 							<span class="row__title">Cloudiness</span>
 							<span class="row__value" data-cloudiness></span>
 							<span class="row__unit">%</span>
@@ -433,26 +451,9 @@
 							<span class="row__unit">mm</span>
 						</li>
 						<li>
-							<span class="row__title">Dew point</span>
-							<span class="row__value" data-dew-point></span>
-							<span class="row__unit"><span data-temp-unit>°C</span></span>
-						</li>
-						<li>
-							<span class="row__title">UV index</span>
-							<span class="row__value" data-uvi></span>
-						</li>
-						<li>
 							<span class="row__title">Precipitation</span>
 							<span class="row__value" data-pop></span>
 							<span class="row__unit">%</span>
-						</li>
-						<li>
-							<span class="row__title">Moonrise</span>
-							<span class="row__value" data-moonrise></span>
-						</li>
-						<li>
-							<span class="row__title">Moon phase</span>
-							<span class="row__value" data-moon-phase></span>
 						</li>
 						<li>
 							<span class="row__title">Moonset</span>
@@ -465,8 +466,11 @@
 						</div>
 					</div> -->
 					<div class="minute__info">
-						<ul class="minute__list"></ul>
-						<ul class="minute-time__list"></ul>
+						<span class="minute__precipitation-msg"></span>
+						<div class="minute__chart">
+							<ul class="minute__list"></ul>
+							<ul class="minute-time__list"></ul>
+						</div>
 					</div>
 				</section>
 			</main>
