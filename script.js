@@ -422,6 +422,7 @@ function callOneCall() {
 
 		normalLayout.dataset.hidden = true;
 		fullLayout.dataset.hidden = false;
+		locationInputDetails.value = globalWeatherData.name;
 		weather
 			.getOneCallByLatLong(
 				globalWeatherData.coord.lat,
@@ -444,10 +445,10 @@ function callOneCall() {
 					backButton.addEventListener("click", () => {
 						normalLayout.dataset.hidden = false;
 						fullLayout.dataset.hidden = true;
+						locationInput.value = globalWeatherData.name;
 
 						addCurrentWeatherSection(globalWeatherData.name);
 						updateCurrentWeatherSection(globalWeatherData.name);
-						console.log("test");
 					});
 				}
 			})
