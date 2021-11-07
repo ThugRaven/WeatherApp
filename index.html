@@ -155,9 +155,9 @@
 							type="text"
 							class="form__input"
 							placeholder="City"
-							data-input
+							data-input-details
 						/>
-						<button class="form__submit" data-button>
+						<button class="form__submit" data-button-details>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								height="24px"
@@ -173,7 +173,7 @@
 							</svg>
 						</button>
 					</form>
-					<p class="search-error" data-hidden="true"></p>
+					<p class="search-error" data-hidden="true" data-search-error></p>
 				</section>
 				<section class="section section--current-full">
 					<div class="current__location">
@@ -216,10 +216,8 @@
 					</div>
 					<div class="current__feels-like">
 						Feels like
-						<span class="temp__feels-value" data-temp-feels></span><span
-							data-temp-unit
-							>°C</span
-						>
+						<span class="temp__feels-value" data-temp-feels></span
+						><span data-temp-unit>°C</span>
 					</div>
 					<img
 						src="https://openweathermap.org/img/wn/02d@2x.png"
@@ -298,7 +296,7 @@
 							<span class="row__value" data-uvi></span>
 						</li>
 					</ul>
-					<button class="more-info">Back</button>
+					<button class="back-btn">Back</button>
 				</section>
 			</aside>
 			<main class="main main--forecast">
@@ -316,10 +314,8 @@
 						</div>
 						<div class="daily__feels-like">
 							Feels like
-							<span class="temp__feels-value" data-temp-feels>15</span><span
-								data-temp-unit
-								>°C</span
-							>
+							<span class="temp__feels-value" data-temp-feels>15</span
+							><span data-temp-unit>°C</span>
 						</div>
 						<img
 							src="https://openweathermap.org/img/wn/02d@2x.png"
@@ -511,10 +507,8 @@
 					<span class="temp__unit temp__unit--C" data-temp-unit>°C</span>
 				</div>
 				<div class="current__feels-like">
-					Feels like <span class="temp__feels-value" data-temp-feels></span><span
-						data-temp-unit
-						>°C</span
-					>
+					Feels like <span class="temp__feels-value" data-temp-feels></span
+					><span data-temp-unit>°C</span>
 				</div>
 				<img
 					src="https://openweathermap.org/img/wn/02d@2x.png"

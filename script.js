@@ -13,8 +13,11 @@ const lastSearchedItemTemplate = document.getElementById(
 );
 const forecastItemTemplate = document.getElementById("forecast-item__template");
 const locationInput = document.querySelector("[data-input]");
+const locationInputDetails = document.querySelector("[data-input-details]");
 const weatherButton = document.querySelector("[data-button]");
+const weatherButtonDetails = document.querySelector("[data-button-details]");
 const searchError = document.querySelector(".search-error");
+const searchErrorDetails = document.querySelector("[data-search-error]");
 const lastSearchedList = document.querySelector(".last-searched__list");
 const normalLayout = document.querySelector(".normal-layout");
 const fullLayout = document.querySelector(".full-layout");
@@ -23,16 +26,9 @@ const LOCAL_STORAGE_CITIES_WEATHER_DATA_KEY = "weather.app.cities.weather.data";
 let citiesWeatherData =
 	JSON.parse(localStorage.getItem(LOCAL_STORAGE_CITIES_WEATHER_DATA_KEY)) || [];
 
-history.replaceState("", null, "");
-
-window.addEventListener("popstate", (event) => {
-	console.log(
-		"location: " + document.location + ", state: " + JSON.stringify(event.state)
-	);
-});
-
 let currentSection;
 let isFirstTime = false;
+let backButton;
 
 let refreshTimeout;
 let globalWeatherData;
@@ -46,6 +42,36 @@ weatherButton.addEventListener("click", (event) => {
 
 	addCurrentWeatherSection(location);
 	updateCurrentWeatherSection(location);
+});
+
+weatherButtonDetails.addEventListener("click", (event) => {
+	event.preventDefault();
+	const location = locationInputDetails.value.trim().toLowerCase();
+	if (location == null || location === "") return;
+	console.log(location);
+
+	weather
+		.getCurrentByCityName(location)
+		.then((weatherData) => {
+			console.log("Call API");
+			searchErrorDetails.innerHTML = "";
+			searchErrorDetails.dataset.hidden = true;
+
+			console.log(weatherData);
+
+			globalWeatherData = weatherData;
+			callOneCall();
+		})
+		.catch((err) => {
+			console.error(err);
+
+			searchErrorDetails.dataset.hidden = false;
+			if (err.message == 404) {
+				searchErrorDetails.innerHTML = "City not found!";
+			} else {
+				searchErrorDetails.innerHTML = "Error occured!";
+			}
+		});
 });
 
 function addCurrentWeatherSection(location) {
@@ -110,8 +136,6 @@ function callCurrentWeather(location) {
 			console.log("Call API");
 			searchError.innerHTML = "";
 			searchError.dataset.hidden = true;
-
-			history.pushState({ city: location }, "city", `?city=${location}`);
 
 			if (isUpdateAvailable(location)) {
 				let index = citiesWeatherData.findIndex((el) => el.city == location);
@@ -414,10 +438,24 @@ function callOneCall() {
 				);
 				displayDailyForecast(weatherData.daily);
 				displayMinuteForecast(weatherData.minutely);
+
+				if (!backButton) {
+					backButton = document.querySelector(".back-btn");
+					backButton.addEventListener("click", () => {
+						normalLayout.dataset.hidden = false;
+						fullLayout.dataset.hidden = true;
+
+						addCurrentWeatherSection(globalWeatherData.name);
+						updateCurrentWeatherSection(globalWeatherData.name);
+						console.log("test");
+					});
+				}
 			})
 			.catch((err) => {
 				console.error(err);
 
+				normalLayout.dataset.hidden = false;
+				fullLayout.dataset.hidden = true;
 				if (refreshTimeout) clearTimeout(refreshTimeout);
 				if (err.message == 404) {
 				} else {
@@ -697,6 +735,9 @@ function getMoonPhase(phase) {
 function displayMinuteForecast(weatherData) {
 	const minuteList = document.querySelector(".minute__list");
 	const minuteTimeList = document.querySelector(".minute-time__list");
+
+	minuteList.innerHTML = "";
+	minuteTimeList.innerHTML = "";
 
 	let maxHeight = 0;
 	for (let i = 0; i < weatherData.length; i++) {

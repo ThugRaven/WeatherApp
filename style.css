@@ -437,7 +437,8 @@ body {
 	transition: transform 250ms ease-in-out;
 }
 
-.more-info {
+.more-info,
+.back-btn {
 	padding: 0.75em 2em;
 	width: 100%;
 	background-color: var(--clr-primary);
@@ -451,7 +452,8 @@ body {
 	transition: background-color 150ms ease-in-out;
 }
 
-.more-info:hover {
+.more-info:hover,
+.back-btn:hover {
 	background-color: var(--clr-primary-light-400);
 }
 

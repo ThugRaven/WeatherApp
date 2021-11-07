@@ -7,5 +7,3 @@
 - https://dribbble.com/shots/4121406-Simple-Weather-Hero
 
 # TODO
-
-- [ ] Use history API to render data according to history state (back button, etc.)
