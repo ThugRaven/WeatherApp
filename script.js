@@ -54,7 +54,7 @@ weatherButtonDetails.addEventListener("click", (event) => {
 		.getCurrentByCityName(location)
 		.then((weatherData) => {
 			console.log("Call API");
-			searchErrorDetails.innerHTML = "";
+			searchErrorDetails.innerText = "";
 			searchErrorDetails.dataset.hidden = true;
 
 			console.log(weatherData);
@@ -67,9 +67,9 @@ weatherButtonDetails.addEventListener("click", (event) => {
 
 			searchErrorDetails.dataset.hidden = false;
 			if (err.message == 404) {
-				searchErrorDetails.innerHTML = "City not found!";
+				searchErrorDetails.innerText = "City not found!";
 			} else {
-				searchErrorDetails.innerHTML = "Error occured!";
+				searchErrorDetails.innerText = "Error occured!";
 			}
 		});
 });
@@ -107,7 +107,7 @@ function updateCurrentWeatherSection(location) {
 		if (isUpdateAvailable(location)) {
 			callCurrentWeather(location);
 		} else {
-			searchError.innerHTML = "";
+			searchError.innerText = "";
 			searchError.dataset.hidden = true;
 			displayData(currentSection, cityData.weatherData);
 			globalWeatherData = cityData.weatherData;
@@ -134,7 +134,7 @@ function callCurrentWeather(location) {
 		.getCurrentByCityName(location)
 		.then((weatherData) => {
 			console.log("Call API");
-			searchError.innerHTML = "";
+			searchError.innerText = "";
 			searchError.dataset.hidden = true;
 
 			if (isUpdateAvailable(location)) {
@@ -175,9 +175,9 @@ function callCurrentWeather(location) {
 
 			searchError.dataset.hidden = false;
 			if (err.message == 404) {
-				searchError.innerHTML = "City not found!";
+				searchError.innerText = "City not found!";
 			} else {
-				searchError.innerHTML = "Error occured!";
+				searchError.innerText = "Error occured!";
 			}
 		});
 }
@@ -189,14 +189,14 @@ function displayData(container, weatherData) {
 
 	container.querySelector(
 		"[data-location]"
-	).innerHTML = `${weatherData.name}, ${weatherData.sys.country}`;
-	container.querySelector("[data-date]").innerHTML = displayUNIXDate(
+	).innerText = `${weatherData.name}, ${weatherData.sys.country}`;
+	container.querySelector("[data-date]").innerText = displayUNIXDate(
 		weatherData.dt
 	);
-	container.querySelector("[data-temp]").innerHTML = displayTemp(
+	container.querySelector("[data-temp]").innerText = displayTemp(
 		weatherData.main.temp
 	);
-	container.querySelector("[data-temp-feels]").innerHTML = displayTemp(
+	container.querySelector("[data-temp-feels]").innerText = displayTemp(
 		weatherData.main.feels_like
 	);
 	container.querySelector("[data-icon]").src = weather.getWeatherIcon(
@@ -204,39 +204,39 @@ function displayData(container, weatherData) {
 	);
 	container.querySelector("[data-icon]").alt = weatherData.weather[0].main;
 	container.querySelector("[data-icon]").title = weatherData.weather[0].main;
-	container.querySelector("[data-main-desc]").innerHTML =
+	container.querySelector("[data-main-desc]").innerText =
 		weatherData.weather[0].main;
-	container.querySelector("[data-second-desc]").innerHTML =
+	container.querySelector("[data-second-desc]").innerText =
 		weatherData.weather[0].description;
-	container.querySelector("[data-pressure]").innerHTML =
+	container.querySelector("[data-pressure]").innerText =
 		weatherData.main.pressure;
-	container.querySelector("[data-visibility]").innerHTML =
+	container.querySelector("[data-visibility]").innerText =
 		Math.round(weatherData.visibility / 100) / 10;
-	container.querySelector("[data-humidity]").innerHTML =
+	container.querySelector("[data-humidity]").innerText =
 		weatherData.main.humidity;
-	container.querySelector("[data-sunrise]").innerHTML = displayUNIXTime(
+	container.querySelector("[data-sunrise]").innerText = displayUNIXTime(
 		weatherData.sys.sunrise
 	);
-	container.querySelector("[data-wind]").innerHTML = weatherData.wind.speed;
-	container.querySelector("[data-sunset]").innerHTML = displayUNIXTime(
+	container.querySelector("[data-wind]").innerText = weatherData.wind.speed;
+	container.querySelector("[data-sunset]").innerText = displayUNIXTime(
 		weatherData.sys.sunset
 	);
-	container.querySelector("[data-cloudiness]").innerHTML =
+	container.querySelector("[data-cloudiness]").innerText =
 		weatherData.clouds.all;
 	container.querySelector(
 		"[data-wind-deg]"
-	).innerHTML = `${weatherData.wind.deg}°`;
+	).innerText = `${weatherData.wind.deg}°`;
 	container
 		.querySelector(".wind-pointer")
 		.style.setProperty("transform", `rotate(${weatherData.wind.deg}deg)`);
 	if (weatherData.rain != null && weatherData.rain["1h"] != null) {
-		weatherPrecipitation.innerHTML = weatherData.rain["1h"];
+		weatherPrecipitation.innerText = weatherData.rain["1h"];
 		weatherPrecipitation.title = `${weatherData.rain["1h"]}mm/h of Rain`;
 	} else if (weatherData.snow != null && weatherData.snow["1h"] != null) {
-		weatherPrecipitation.innerHTML = weatherData.snow["1h"];
+		weatherPrecipitation.innerText = weatherData.snow["1h"];
 		weatherPrecipitation.title = `${weatherData.snow["1h"]}mm/h of Snow`;
 	} else {
-		weatherPrecipitation.innerHTML = "0";
+		weatherPrecipitation.innerText = "0";
 		weatherPrecipitation.title = "";
 	}
 
@@ -319,7 +319,7 @@ function saveCitiesWeatherData() {
 }
 
 function showLastSearched() {
-	lastSearchedList.innerHTML = "";
+	lastSearchedList.innerText = "";
 
 	citiesWeatherData.forEach((el) => {
 		let item = document.importNode(lastSearchedItemTemplate.content, true);
@@ -333,11 +333,11 @@ function showLastSearched() {
 
 		item.querySelector(
 			".last-searched__city"
-		).innerHTML = `${el.weatherData.name}, ${el.weatherData.sys.country}`;
-		item.querySelector(".last-searched__temp").innerHTML = displayTemp(
+		).innerText = `${el.weatherData.name}, ${el.weatherData.sys.country}`;
+		item.querySelector(".last-searched__temp").innerText = displayTemp(
 			el.weatherData.main.temp
 		);
-		item.querySelector(".last-searched__date").innerHTML = displayShortDate(
+		item.querySelector(".last-searched__date").innerText = displayShortDate(
 			el.lastUpdated
 		);
 		item.querySelector(".last-searched__item").addEventListener("click", () => {
@@ -472,14 +472,14 @@ function displayOneCallData(container, weatherData) {
 
 	container.querySelector(
 		"[data-location]"
-	).innerHTML = `${globalWeatherData.name}, ${globalWeatherData.sys.country}`;
-	container.querySelector("[data-date]").innerHTML = displayUNIXDate(
+	).innerText = `${globalWeatherData.name}, ${globalWeatherData.sys.country}`;
+	container.querySelector("[data-date]").innerText = displayUNIXDate(
 		weatherData.dt
 	);
-	container.querySelector("[data-temp]").innerHTML = displayTemp(
+	container.querySelector("[data-temp]").innerText = displayTemp(
 		weatherData.temp
 	);
-	container.querySelector("[data-temp-feels]").innerHTML = displayTemp(
+	container.querySelector("[data-temp-feels]").innerText = displayTemp(
 		weatherData.feels_like
 	);
 	container.querySelector("[data-icon]").src = weather.getWeatherIcon(
@@ -487,39 +487,39 @@ function displayOneCallData(container, weatherData) {
 	);
 	container.querySelector("[data-icon]").alt = weatherData.weather[0].main;
 	container.querySelector("[data-icon]").title = weatherData.weather[0].main;
-	container.querySelector("[data-main-desc]").innerHTML =
+	container.querySelector("[data-main-desc]").innerText =
 		weatherData.weather[0].main;
-	container.querySelector("[data-second-desc]").innerHTML =
+	container.querySelector("[data-second-desc]").innerText =
 		weatherData.weather[0].description;
-	container.querySelector("[data-pressure]").innerHTML = weatherData.pressure;
-	container.querySelector("[data-visibility]").innerHTML =
+	container.querySelector("[data-pressure]").innerText = weatherData.pressure;
+	container.querySelector("[data-visibility]").innerText =
 		Math.round(weatherData.visibility / 100) / 10;
-	container.querySelector("[data-humidity]").innerHTML = weatherData.humidity;
-	container.querySelector("[data-sunrise]").innerHTML = displayUNIXTime(
+	container.querySelector("[data-humidity]").innerText = weatherData.humidity;
+	container.querySelector("[data-sunrise]").innerText = displayUNIXTime(
 		weatherData.sunrise
 	);
-	container.querySelector("[data-wind]").innerHTML = weatherData.wind_speed;
-	container.querySelector("[data-sunset]").innerHTML = displayUNIXTime(
+	container.querySelector("[data-wind]").innerText = weatherData.wind_speed;
+	container.querySelector("[data-sunset]").innerText = displayUNIXTime(
 		weatherData.sunset
 	);
-	container.querySelector("[data-cloudiness]").innerHTML = weatherData.clouds;
+	container.querySelector("[data-cloudiness]").innerText = weatherData.clouds;
 	container.querySelector(
 		"[data-wind-deg]"
-	).innerHTML = `${weatherData.wind_deg}°`;
+	).innerText = `${weatherData.wind_deg}°`;
 	container
 		.querySelector(".wind-pointer")
 		.style.setProperty("transform", `rotate(${weatherData.wind_deg}deg)`);
 	if (weatherData.rain != null && weatherData.rain["1h"] != null) {
-		weatherPrecipitation.innerHTML = weatherData.rain["1h"];
+		weatherPrecipitation.innerText = weatherData.rain["1h"];
 		weatherPrecipitation.title = `${weatherData.rain["1h"]}mm/h of Rain`;
 	} else if (weatherData.snow != null && weatherData.snow["1h"] != null) {
-		weatherPrecipitation.innerHTML = weatherData.snow["1h"];
+		weatherPrecipitation.innerText = weatherData.snow["1h"];
 		weatherPrecipitation.title = `${weatherData.snow["1h"]}mm/h of Snow`;
 	} else {
-		weatherPrecipitation.innerHTML = "0";
+		weatherPrecipitation.innerText = "0";
 		weatherPrecipitation.title = "";
 	}
-	container.querySelector("[data-dew-point]").innerHTML = displayTemp(
+	container.querySelector("[data-dew-point]").innerText = displayTemp(
 		weatherData.dew_point
 	);
 
@@ -542,20 +542,20 @@ function displayOneCallData(container, weatherData) {
 		"NNW",
 		"N",
 	];
-	container.querySelector("[data-direction]").innerHTML =
+	container.querySelector("[data-direction]").innerText =
 		compassSector[(weatherData.wind_deg / 22.5).toFixed(0)];
-	container.querySelector("[data-uvi]").innerHTML = weatherData.uvi;
+	container.querySelector("[data-uvi]").innerText = weatherData.uvi;
 }
 
 function displayDailyForecast(weatherData) {
 	const forecastList = document.querySelector(".forecast__list");
-	forecastList.innerHTML = "";
+	forecastList.innerText = "";
 	let lastIndex = 0;
 
 	weatherData.forEach((el, index) => {
 		let item = document.importNode(forecastItemTemplate.content, true);
 
-		item.querySelector("[data-date]").innerHTML = displayUNIXDate(el.dt, {
+		item.querySelector("[data-date]").innerText = displayUNIXDate(el.dt, {
 			weekday: "short",
 			day: "numeric",
 			month: "short",
@@ -566,11 +566,11 @@ function displayDailyForecast(weatherData) {
 		item.querySelector("[data-icon]").alt = el.weather[0].main;
 		item.querySelector("[data-icon]").title = el.weather[0].main;
 
-		item.querySelector("[data-main-desc]").innerHTML = el.weather[0].main;
-		item.querySelector("[data-temp-day]").innerHTML = `${displayTemp(
+		item.querySelector("[data-main-desc]").innerText = el.weather[0].main;
+		item.querySelector("[data-temp-day]").innerText = `${displayTemp(
 			el.temp.day
 		)}°`;
-		item.querySelector("[data-temp-night]").innerHTML = `${displayTemp(
+		item.querySelector("[data-temp-night]").innerText = `${displayTemp(
 			el.temp.night
 		)}°`;
 
@@ -618,23 +618,23 @@ function displayDailyForecastDetails(weatherData) {
 
 	container.querySelector(
 		"[data-location]"
-	).innerHTML = `${globalWeatherData.name}`;
-	container.querySelector("[data-date]").innerHTML = displayUNIXDate(
+	).innerText = `${globalWeatherData.name}`;
+	container.querySelector("[data-date]").innerText = displayUNIXDate(
 		weatherData.dt,
 		{
 			dateStyle: "full",
 		}
 	);
-	container.querySelector("[data-temp]").innerHTML = displayTemp(
+	container.querySelector("[data-temp]").innerText = displayTemp(
 		weatherData.temp.day
 	);
-	container.querySelector("[data-temp-feels]").innerHTML = displayTemp(
+	container.querySelector("[data-temp-feels]").innerText = displayTemp(
 		weatherData.feels_like.day
 	);
-	container.querySelector("[data-temp-max]").innerHTML = `${displayTemp(
+	container.querySelector("[data-temp-max]").innerText = `${displayTemp(
 		weatherData.temp.max
 	)}°`;
-	container.querySelector("[data-temp-min]").innerHTML = `${displayTemp(
+	container.querySelector("[data-temp-min]").innerText = `${displayTemp(
 		weatherData.temp.min
 	)}°`;
 	container.querySelector("[data-icon]").src = weather.getWeatherIcon(
@@ -642,26 +642,26 @@ function displayDailyForecastDetails(weatherData) {
 	);
 	container.querySelector("[data-icon]").alt = weatherData.weather[0].main;
 	container.querySelector("[data-icon]").title = weatherData.weather[0].main;
-	container.querySelector("[data-main-desc]").innerHTML =
+	container.querySelector("[data-main-desc]").innerText =
 		weatherData.weather[0].main;
-	container.querySelector("[data-second-desc]").innerHTML =
+	container.querySelector("[data-second-desc]").innerText =
 		weatherData.weather[0].description;
-	container.querySelector("[data-pressure]").innerHTML = weatherData.pressure;
-	container.querySelector("[data-wind]").innerHTML = weatherData.wind_speed;
-	container.querySelector("[data-humidity]").innerHTML = weatherData.humidity;
-	container.querySelector("[data-sunrise]").innerHTML = displayUNIXTime(
+	container.querySelector("[data-pressure]").innerText = weatherData.pressure;
+	container.querySelector("[data-wind]").innerText = weatherData.wind_speed;
+	container.querySelector("[data-humidity]").innerText = weatherData.humidity;
+	container.querySelector("[data-sunrise]").innerText = displayUNIXTime(
 		weatherData.sunrise
 	);
 	container.querySelector(
 		"[data-wind-deg]"
-	).innerHTML = `${weatherData.wind_deg}°`;
+	).innerText = `${weatherData.wind_deg}°`;
 	container
 		.querySelector(".wind-pointer")
 		.style.setProperty("transform", `rotate(${weatherData.wind_deg}deg)`);
-	container.querySelector("[data-sunset]").innerHTML = displayUNIXTime(
+	container.querySelector("[data-sunset]").innerText = displayUNIXTime(
 		weatherData.sunset
 	);
-	container.querySelector("[data-cloudiness]").innerHTML = weatherData.clouds;
+	container.querySelector("[data-cloudiness]").innerText = weatherData.clouds;
 	let compassSector = [
 		"N",
 		"NNE",
@@ -681,34 +681,34 @@ function displayDailyForecastDetails(weatherData) {
 		"NNW",
 		"N",
 	];
-	container.querySelector("[data-direction]").innerHTML =
+	container.querySelector("[data-direction]").innerText =
 		compassSector[(weatherData.wind_deg / 22.5).toFixed(0)];
 	if (weatherData.rain != null) {
-		weatherPrecipitation.innerHTML = weatherData.rain;
+		weatherPrecipitation.innerText = weatherData.rain;
 		weatherPrecipitation.title = `${weatherData.rain}mm of Rain`;
 	} else if (weatherData.snow != null) {
-		weatherPrecipitation.innerHTML = weatherData.snow;
+		weatherPrecipitation.innerText = weatherData.snow;
 		weatherPrecipitation.title = `${weatherData.snow}mm of Snow`;
 	} else {
-		weatherPrecipitation.innerHTML = "0";
+		weatherPrecipitation.innerText = "0";
 		weatherPrecipitation.title = "";
 	}
-	container.querySelector("[data-dew-point]").innerHTML = displayTemp(
+	container.querySelector("[data-dew-point]").innerText = displayTemp(
 		weatherData.dew_point
 	);
-	container.querySelector("[data-uvi]").innerHTML = weatherData.uvi;
-	container.querySelector("[data-pop]").innerHTML = (
+	container.querySelector("[data-uvi]").innerText = weatherData.uvi;
+	container.querySelector("[data-pop]").innerText = (
 		weatherData.pop * 100
 	).toFixed(0);
-	container.querySelector("[data-moonrise]").innerHTML = displayUNIXTime(
+	container.querySelector("[data-moonrise]").innerText = displayUNIXTime(
 		weatherData.moonrise
 	);
-	container.querySelector("[data-moon-phase]").innerHTML =
+	container.querySelector("[data-moon-phase]").innerText =
 		weatherData.moon_phase;
 	container.querySelector("[data-moon-phase]").title = `${
 		weatherData.moon_phase
 	} - ${getMoonPhase(weatherData.moon_phase)}`;
-	container.querySelector("[data-moonset]").innerHTML = displayUNIXTime(
+	container.querySelector("[data-moonset]").innerText = displayUNIXTime(
 		weatherData.moonset
 	);
 }
@@ -737,8 +737,8 @@ function displayMinuteForecast(weatherData) {
 	const minuteList = document.querySelector(".minute__list");
 	const minuteTimeList = document.querySelector(".minute-time__list");
 
-	minuteList.innerHTML = "";
-	minuteTimeList.innerHTML = "";
+	minuteList.innerText = "";
+	minuteTimeList.innerText = "";
 
 	let maxHeight = 0;
 	for (let i = 0; i < weatherData.length; i++) {
@@ -762,7 +762,7 @@ function displayMinuteForecast(weatherData) {
 		}
 
 		if (index % 10 == 0) {
-			time.innerHTML = `${displayUNIXTime(el.dt)}`;
+			time.innerText = `${displayUNIXTime(el.dt)}`;
 		}
 
 		minuteList.appendChild(item);
@@ -839,19 +839,19 @@ function displayPrecipitationMsg(weatherData) {
 	}
 
 	if (!precipitationStart) {
-		minutePrecipitationMsg.innerHTML = "No precipitation within an hour";
+		minutePrecipitationMsg.innerText = "No precipitation within an hour";
 	} else if (precipitationStartIndex === 0 && precipitationEndIndex === 60) {
-		minutePrecipitationMsg.innerHTML = "Precipitation won't end within an hour";
+		minutePrecipitationMsg.innerText = "Precipitation won't end within an hour";
 	} else if (precipitationStartIndex > 0) {
 		let difference =
 			(new Date(precipitationStart) - new Date(weatherData[0].dt)) / 60;
-		minutePrecipitationMsg.innerHTML = `Precipitation will start within ${difference} ${
+		minutePrecipitationMsg.innerText = `Precipitation will start within ${difference} ${
 			difference === 1 ? "minute" : "minutes"
 		} (${displayUNIXTime(precipitationStart)})`;
 	} else if (precipitationEnd) {
 		let difference =
 			(new Date(precipitationEnd) - new Date(weatherData[0].dt)) / 60;
-		minutePrecipitationMsg.innerHTML = `Precipitation will end within ${difference} ${
+		minutePrecipitationMsg.innerText = `Precipitation will end within ${difference} ${
 			difference === 1 ? "minute" : "minutes"
 		} (${displayUNIXTime(precipitationEnd)})`;
 	}
