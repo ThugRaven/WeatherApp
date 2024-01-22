@@ -3,8 +3,8 @@
 Weather App made with HTML, CSS, JS and OpenWeatherAPI
 
 ![Main Page](image_1.png)
-![More info in Dark Theme](image_2.png)
-![More info in Light Theme](image_3.png)
+![More info page in Dark Theme](image_2.png)
+![More info page in Light Theme](image_3.png)
 
 ## Demo
 
