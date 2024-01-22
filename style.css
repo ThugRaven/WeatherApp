@@ -10,8 +10,8 @@
 	--clr-primary-dark: hsl(0, 0%, 12%);
 	--clr-light: hsl(0, 0%, 100%);
 
-	--ff-primary: "Montserrat", sans-serif;
-	--ff-accent: "Lato", sans-serif;
+	--ff-primary: 'Montserrat', sans-serif;
+	--ff-accent: 'Lato', sans-serif;
 	--ff-color: hsl(0, 0%, 100%);
 
 	--fs-h1: 2em;
@@ -144,6 +144,12 @@ body {
 	font-weight: 700;
 	letter-spacing: 0.05em;
 	text-align: center;
+}
+
+.section--apikey {
+	position: absolute;
+	top: 1em;
+	left: 1em;
 }
 
 .logos {
@@ -301,7 +307,7 @@ body {
 	}
 }
 
-[data-hidden="true"] {
+[data-hidden='true'] {
 	display: none !important;
 }
 
@@ -773,7 +779,7 @@ canvas {
 }
 
 .minute__list li::after {
-	content: "";
+	content: '';
 	position: absolute;
 	z-index: 2;
 	bottom: 100%;

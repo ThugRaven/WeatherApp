@@ -1,9 +1,13 @@
 export default class Weather {
-	UNITS = "metric";
-	LANGUAGE = "en";
-	URL_BASE = "https://api.openweathermap.org/data/2.5";
+	UNITS = 'metric';
+	LANGUAGE = 'en';
+	URL_BASE = 'https://api.openweathermap.org/data/2.5';
 
 	constructor(apiKey) {
+		this.API_KEY = apiKey;
+	}
+
+	setApiKey(apiKey) {
 		this.API_KEY = apiKey;
 	}
 
@@ -59,7 +63,7 @@ export default class Weather {
 
 	getCurrentByLatLong(lat, long) {
 		let url = `${this.URL_BASE}/weather?lat=${encodeURI(lat)}&lon=${encodeURI(
-			long
+			long,
 		)}&appid=${this.API_KEY}`;
 
 		return this.prepareURLFetch(url);
@@ -67,7 +71,7 @@ export default class Weather {
 
 	getOneCallByLatLong(lat, long) {
 		let url = `${this.URL_BASE}/onecall?lat=${encodeURI(lat)}&lon=${encodeURI(
-			long
+			long,
 		)}&appid=${this.API_KEY}`;
 
 		return this.prepareURLFetch(url);

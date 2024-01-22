@@ -41,6 +41,10 @@ weatherButton.addEventListener('click', (event) => {
 	const location = locationInput.value.trim().toLowerCase();
 	if (location == null || location === '') return;
 
+	if (apiKeyInput.value != null && apiKeyInput.value != '') {
+		weather.setApiKey(apiKeyInput.value);
+	}
+
 	addCurrentWeatherSection(location);
 	updateCurrentWeatherSection(location);
 });
