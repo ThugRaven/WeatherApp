@@ -14,11 +14,7 @@ Live demo: https://thugraven.github.io/WeatherApp/
 
 To run this project you need to use Local Server
 
-Use the input in top left corner or create a 
-```settings.js``` file:
-```
-export const API_KEY = "...";
-```
+Use the input in top left corner to add an api key
 
 ## Issues
 
