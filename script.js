@@ -1,8 +1,7 @@
-import { API_KEY } from './settings.js';
 import Weather from './weather.js';
 import * as constants from './constants.js';
 
-const weather = new Weather(API_KEY ?? '');
+const weather = new Weather('');
 
 const mainContent = document.querySelector('.main');
 const currentWeatherTemplate = document.getElementById(
